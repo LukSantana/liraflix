@@ -1,0 +1,7 @@
+.movie_anchor{
+  transition: all 0.1s ease-out;
+}
+
+.movie_anchor:hover {
+	scale: 0.98;
+}

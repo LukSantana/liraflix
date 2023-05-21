@@ -24,7 +24,7 @@ const Header = () => {
 						style={{
 							color: "transparent",
 						}}
-						to={`${route.path}${1}`}
+						to={`${route.path}?page=${1}`}
 						className="nav-item-link"
 						key={`${route.routeName}`}
 					>

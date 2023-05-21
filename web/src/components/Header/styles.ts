@@ -4,10 +4,10 @@ export const HeaderContainer = styled.div`
 	position: fixed;
 	top: 0;
 	display: flex;
-	justify-content: space-between;
 	align-items: center;
 	padding: 0 2rem;
 	width: 100%;
+	gap: 4rem;
 	background: rgb(0, 0, 0);
 	background: linear-gradient(
 		180deg,
@@ -19,16 +19,15 @@ export const HeaderContainer = styled.div`
 `;
 
 export const HeaderLogo = styled.img`
-	width: 8rem;
-	height: 2.5rem;
+	width: 6rem;
+	height: 1.7rem;
 `;
 
 export const NavList = styled.ul`
 	display: flex;
-	justify-content: flex-end;
-	gap: 8rem;
+	gap: 4rem;
 	align-items: center;
-	font-size: 18px;
+	font-size: 16px;
 	font-weight: 500;
 	width: 60%;
 `;
