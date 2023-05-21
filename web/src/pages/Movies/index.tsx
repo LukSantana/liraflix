@@ -13,7 +13,7 @@ const Movies = () => {
 	const bearerToken = import.meta.env.VITE_BEARER_TOKEN_MOVIE_API;
 
 	const [movies, setMovies] = useState([]);
-	const [searchParams, setSearchParams] = useSearchParams();
+	const [searchParams] = useSearchParams();
 	const page = parseInt(searchParams.get("page") || "1", 10);
 
 	useEffect(() => {
