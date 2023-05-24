@@ -1,6 +1,6 @@
 import { styled } from "styled-components";
 
-export const MoviesContainer = styled.div`
+export const SearchPageContainer = styled.div`
 	display: flex;
 	flex-direction: column;
 	gap: 2rem;

@@ -11,7 +11,7 @@ export const RandomMoviePickerExternalContainer = styled.div`
 export const RandomMoviePickerInternalContainer = styled.div`
   display: flex;
   padding: 2rem;
-  gap: 4rem;
+  gap: 3rem;
   flex-direction: column;
   align-items: center;
 	background: #333333;

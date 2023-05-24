@@ -1,7 +1,67 @@
-const Animes = () => {
-  return (
-    <div>Animes</div>
-  )
-}
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import Pagination from "@mui/material/Pagination";
+import PaginationItem from "@mui/material/PaginationItem";
+import { useSearchParams } from "react-router-dom";
+import axios from "axios";
 
-export default Animes
+import { AnimesContainer } from "./styles";
+import ContentList from "../../components/ContentList";
+import { bestAnimeApiUrl } from "../../api/animesApi";
+import ContentSkeleton from "../../components/ContentList/ContentSkeleton";
+import { AnimeProps } from "../../types/anime";
+
+const Animes = () => {
+	const [loading, setLoading] = useState<boolean>(true);
+	const [animes, setAnimes] = useState<AnimeProps[]>([]);
+	const [searchParams] = useSearchParams();
+	const page = parseInt(searchParams.get("page") || "1", 10);
+
+	useEffect(() => {
+		axios
+			.get(bestAnimeApiUrl(searchParams.get("page")), {
+				method: "GET",
+			})
+			.then(({ data }) => setAnimes(data.data))
+			.then(() => setLoading(false))
+			.catch((err: Error) => console.error(err));
+	}, []);
+
+	return (
+		<AnimesContainer>
+			{loading && <ContentSkeleton />}
+			{!loading &&
+				<>
+					<ContentList contentList={animes} />
+					<Pagination
+						page={page}
+						sx={{
+							display: "flex",
+							justifyContent: "center",
+							alignItems: "center",
+							color: "#fff",
+							overflow: "hidden",
+						}}
+						count={10}
+						renderItem={(item) => (
+							<PaginationItem
+								sx={{
+									color: "#fff",
+									":hover": {
+										color: "#e50914",
+									},
+								}}
+								component={Link}
+								to={`/animes${item.page === 1 ? "" : `?page=${item.page}`}`}
+								reloadDocument
+								{...item}
+							/>
+						)}
+					/>
+				</>
+			}
+		</AnimesContainer>
+	);
+};
+
+export default Animes;
