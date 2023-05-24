@@ -6,7 +6,7 @@ const ContentSkeleton = () => {
 
 	return (
 		<ContentSkeletonContainer>
-			{[...Array(skeletonCardsNumbers)].map((skeletonCard, index) => (
+			{[...Array(skeletonCardsNumbers)].map((_skeletonCard, index) => (
 				<Skeleton variant="rounded" width="1fr" height="12rem" key={'skeleton' + index}/>
 			))}
 		</ContentSkeletonContainer>
