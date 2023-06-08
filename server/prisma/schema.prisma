@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,26 +8,31 @@ datasource db {
 }
 
 model ContentList {
-  id                 Int      @id @default(autoincrement())
+  id                 Int           @id @default(autoincrement())
   name               String
   type               String
-  status             String
-  global_rating      Float    @default(0)
-  personal_rating    Float?   @default(0)
+  content_status     Int
+  global_rating      Float         @default(0)
+  personal_rating    Float?        @default(0)
   genres             String
   images             String
-  creation_timestamp DateTime @default(now())
+  creation_timestamp DateTime      @default(now())
+  ContentStatus      ContentStatus @relation(fields: [content_status], references: [id])
+}
+
+model ContentStatus {
+  id                 Int           @id @default(autoincrement())
+  status             String
+  creation_timestamp DateTime      @default(now())
+  ContentList        ContentList[]
 }
 
 model Genres {
-  id           Int           @id
-  name         String
-  content      ContentType[]
-  content_type Int
+  id   Int    @id
+  name String
 }
 
 model ContentType {
-  id     Int     @id
-  name   String
-  Genres Genres? @relation(fields: [id], references: [content_type])
+  id   Int    @id
+  name String
 }
