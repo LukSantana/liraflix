@@ -1,0 +1,36 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model ContentList {
+  id                 Int      @id @default(autoincrement())
+  name               String
+  type               String
+  status             String
+  global_rating      Float    @default(0)
+  personal_rating    Float?   @default(0)
+  genres             String
+  images             String
+  creation_timestamp DateTime @default(now())
+}
+
+model Genres {
+  id           Int           @id
+  name         String
+  content      ContentType[]
+  content_type Int
+}
+
+model ContentType {
+  id     Int     @id
+  name   String
+  Genres Genres? @relation(fields: [id], references: [content_type])
+}
