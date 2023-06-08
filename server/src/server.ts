@@ -1,13 +1,15 @@
 import express from "express";
-import { Router, Request, Response } from "express";
+import { APP_ROUTER_PREFIX, serverPort } from "./infra/environments";
+import { handleCors } from "./server/cors";
+import routes from "./server/routes";
 
 const app = express();
-const route = Router();
+
 app.use(express.json());
-route.get("/", (req: Request, res: Response) => {
-	res.json({ message: "Teste" });
-});
+handleCors(app);
 
-app.use(route);
+app.use(APP_ROUTER_PREFIX, routes);
 
-app.listen(3333, () => "server running on port 3333");
+app.listen(serverPort, () =>
+	console.log(`Server running on port ${serverPort}`)
+);
