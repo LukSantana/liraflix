@@ -8,37 +8,42 @@ datasource db {
 }
 
 model ContentList {
-  id                 String        @id @default(uuid())
+  id                 String   @id @default(uuid())
   name               String
-  type               String
   content_status     String
   content_type       String
-  global_rating      Float         @default(0)
-  personal_rating    Float?        @default(0)
+  global_rating      Float    @default(0)
+  personal_rating    Float?   @default(0)
   genres             String
   images             String
-  creation_timestamp DateTime      @default(now())
-  ContentStatus      ContentStatus @relation(fields: [content_status], references: [id])
-  ContentType        ContentType   @relation(fields: [content_type], references: [id])
+  creation_timestamp DateTime @default(now())
+  record_timestamp   DateTime @default(now())
+  ContentStatus ContentStatus @relation(fields: [content_status], references: [id])
+  ContentType   ContentType   @relation(fields: [content_type], references: [id])
 }
 
 model ContentStatus {
   id                 String        @id @default(uuid())
   status             String
   creation_timestamp DateTime      @default(now())
+  record_timestamp   DateTime      @default(now())
   ContentList        ContentList[]
 }
 
 model Genres {
-  id           String      @id @default(uuid())
-  name         String
-  content_type String
-  ContentType  ContentType @relation(fields: [content_type], references: [id])
+  id                 String      @id @default(uuid())
+  name               String
+  content_type       String
+  creation_timestamp DateTime    @default(now())
+  record_timestamp   DateTime    @default(now())
+  ContentType        ContentType @relation(fields: [content_type], references: [id])
 }
 
 model ContentType {
-  id          String        @id @default(uuid())
-  name        String
-  Genres      Genres[]
-  ContentList ContentList[]
+  id                 String        @id @default(uuid())
+  name               String
+  creation_timestamp DateTime      @default(now())
+  record_timestamp   DateTime      @default(now())
+  Genres             Genres[]
+  ContentList        ContentList[]
 }

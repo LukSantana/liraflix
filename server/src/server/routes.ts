@@ -6,51 +6,84 @@ const router = Router();
 
 const prisma = new PrismaClient();
 
-router.get("/animes/:apiKey", async (req: Request, res: Response) => {
-	const apiKey = req.params.apiKey;
-	let data: {
-		genres: Array<{
-			id: number;
-			name: string;
-		}>;
+router.get("/contentlist", async (req: Request, res: Response) => {
+	let contentId = req.query.id;
+	let contentName = req.query.name;
+	let contentStatus = req.query.status;
+	let contentType = req.query.type;
+
+	let whereProps: {
+		id: any;
+		name: any;
+		content_status: any;
+		content_type: any;
+	} = {
+		id: contentId,
+		name: contentName,
+		content_status: contentStatus,
+		content_type: contentType,
 	};
-	await fetch("https://api.themoviedb.org/3/genre/movie/list", {
-		method: "GET",
-		credentials: "include",
-		headers: {
-			Authorization: `Bearer ${apiKey}`,
-			"Content-Type": "application/json",
-		},
-	})
-		.then((response) => response.json())
-		.then((res) => {
-			data = res;
-		});
 
-	const genres = data!.genres;
+	let response;
 
-	genres.forEach(
-		async (genre: { id: number; name: string }) =>
-			await prisma.genres.create({
-				data: {
-					id: randomUUID(),
-					name: genre.name,
-					content_type: 'Movie'
-				},
-			})
-	);
+	response = await prisma.contentList.findMany({
+		where: whereProps,
+	});
 
-	return res.status(200);
+	return res.status(200).json(response);
 });
 
-// router.post("/watchlist", async (req: Request, res: Response) => {
-// 	const animes = await prisma.contentList.create({
-// 		data: {
+router.post("/content", async (req: Request, res: Response) => {
+	const body = req.body;
 
-// 		}
-// 	});
+	const contentName = body.name;
 
-// 	return res.status(200).json(animes);
-// });
+	const contentStatusResponse = await prisma.contentStatus.findFirst({
+		where: {
+			status: body.content_status,
+		},
+	});
+	const contentStatus = contentStatusResponse?.id
+
+	const contentTypeResponse = await prisma.contentType.findFirst({
+		where: {
+			name: body.content_type,
+		},
+	});
+	const contentType = contentTypeResponse?.id
+
+	const globalRating = body.global_rating;
+	const personalRating = body.personal_rating;
+	const genres = body.genres;
+	const images = body.images;
+
+	const queryData: {
+		id: any;
+		name: any;
+		content_status: any;
+		content_type: any;
+		global_rating: any;
+		personal_rating: any;
+		genres: any;
+		images: any;
+	} = {
+		id: randomUUID(),
+		name: contentName,
+		content_status: contentStatus,
+		content_type: contentType,
+		global_rating: globalRating,
+		personal_rating: personalRating && personalRating,
+		genres: genres,
+		images: images,
+	};
+
+	console.log(queryData);
+
+	const response = await prisma.contentList.create({
+		data: queryData,
+	});
+
+	return res.status(200).json(response);
+});
 
 export default router;
