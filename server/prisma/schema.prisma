@@ -8,31 +8,37 @@ datasource db {
 }
 
 model ContentList {
-  id                 Int           @id @default(autoincrement())
+  id                 String        @id @default(uuid())
   name               String
   type               String
-  content_status     Int
+  content_status     String
+  content_type       String
   global_rating      Float         @default(0)
   personal_rating    Float?        @default(0)
   genres             String
   images             String
   creation_timestamp DateTime      @default(now())
   ContentStatus      ContentStatus @relation(fields: [content_status], references: [id])
+  ContentType        ContentType   @relation(fields: [content_type], references: [id])
 }
 
 model ContentStatus {
-  id                 Int           @id @default(autoincrement())
+  id                 String        @id @default(uuid())
   status             String
   creation_timestamp DateTime      @default(now())
   ContentList        ContentList[]
 }
 
 model Genres {
-  id   Int    @id
-  name String
+  id           String      @id @default(uuid())
+  name         String
+  content_type String
+  ContentType  ContentType @relation(fields: [content_type], references: [id])
 }
 
 model ContentType {
-  id   Int    @id
-  name String
+  id          String        @id @default(uuid())
+  name        String
+  Genres      Genres[]
+  ContentList ContentList[]
 }
