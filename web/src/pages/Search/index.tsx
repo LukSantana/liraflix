@@ -11,6 +11,7 @@ import { MovieProps } from "../../types/movie";
 import { AnimeProps } from "../../types/anime";
 import NoContentWarning from "../../components/ContentList/NoContentWarning";
 import ContentSkeleton from "../../components/ContentList/ContentSkeleton";
+import themes from "../../themes";
 
 const Search = () => {
 	const [loading, setLoading] = useState<boolean>(true);
@@ -26,7 +27,7 @@ const Search = () => {
 
 	const getData = async () => {
 		const tempData = sortContentByScore(
-			filterContentByTitle(await fetchData(searchParams, page), searchParams),
+			filterContentByTitle(await fetchData(searchParams, page), searchParams)
 		);
 
 		setContent(tempData);
@@ -48,7 +49,7 @@ const Search = () => {
 		<SearchPageContainer>
 			{loading && <ContentSkeleton />}
 			{noContent && <NoContentWarning />}
-			{(!noContent && content !== undefined) && (
+			{!noContent && content !== undefined && (
 				<>
 					<ContentList contentList={content} />
 					<Pagination
@@ -66,7 +67,7 @@ const Search = () => {
 								sx={{
 									color: "#fff",
 									":hover": {
-										color: "#e50914",
+										color: themes.colors.red,
 									},
 								}}
 								component={Link}

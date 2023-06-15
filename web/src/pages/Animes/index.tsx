@@ -7,7 +7,7 @@ import axios from "axios";
 
 import { AnimesContainer } from "./styles";
 import ContentList from "../../components/ContentList";
-import { bestAnimeApiUrl } from "../../api/animesApi";
+import { getBestAnime } from "../../api/animesApi";
 import ContentSkeleton from "../../components/ContentList/ContentSkeleton";
 import { AnimeProps } from "../../types/anime";
 
@@ -18,19 +18,16 @@ const Animes = () => {
 	const page = parseInt(searchParams.get("page") || "1", 10);
 
 	useEffect(() => {
-		axios
-			.get(bestAnimeApiUrl(searchParams.get("page")), {
-				method: "GET",
-			})
-			.then(({ data }) => setAnimes(data.data))
-			.then(() => setLoading(false))
-			.catch((err: Error) => console.error(err));
+		getBestAnime(searchParams.get("page")!).then((response) =>
+			setAnimes(response.data.data)
+		);
+		setLoading(false);
 	}, []);
 
 	return (
 		<AnimesContainer>
 			{loading && <ContentSkeleton />}
-			{!loading &&
+			{!loading && (
 				<>
 					<ContentList contentList={animes} />
 					<Pagination
@@ -59,7 +56,7 @@ const Animes = () => {
 						)}
 					/>
 				</>
-			}
+			)}
 		</AnimesContainer>
 	);
 };

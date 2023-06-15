@@ -3,33 +3,24 @@ import { Link } from "react-router-dom";
 import Pagination from "@mui/material/Pagination";
 import PaginationItem from "@mui/material/PaginationItem";
 import { useSearchParams } from "react-router-dom";
-import axios from "axios";
 
 import { MoviesContainer } from "./styles";
 import ContentList from "../../components/ContentList";
-import { popularMoviesApiUrl } from "../../api/moviesApi";
+import { getPopularMovies } from "../../api/moviesApi";
 import { MovieProps } from "../../types/movie";
 import ContentSkeleton from "../../components/ContentList/ContentSkeleton";
+import themes from "../../themes";
 
 const Movies = () => {
-	const bearerToken = import.meta.env.VITE_BEARER_TOKEN_MOVIE_API;
 	const [loading, setLoading] = useState<boolean>(true);
 	const [movies, setMovies] = useState<MovieProps[]>([]);
 	const [searchParams] = useSearchParams();
-	const page = parseInt(searchParams.get("page") || "1", 10);
+	const page = searchParams.get("page") || "1";
 
 	useEffect(() => {
-		axios
-			.get(popularMoviesApiUrl(page), {
-				method: "GET",
-				headers: {
-					accept: "application/json",
-					Authorization: `Bearer ${bearerToken}`,
-				},
-			})
-			.then(({ data }) => setMovies(data.results))
-			.then(() => setLoading(false))
-			.catch((err: Error) => console.error(err));
+		getPopularMovies(page)
+			.then((response) => setMovies(response.data.results))
+			.then(() => setLoading(false));
 	}, []);
 
 	return (
@@ -39,7 +30,7 @@ const Movies = () => {
 				<>
 					<ContentList contentList={movies} />
 					<Pagination
-						page={page}
+						page={parseInt(page)}
 						sx={{
 							display: "flex",
 							justifyContent: "center",
@@ -53,7 +44,7 @@ const Movies = () => {
 								sx={{
 									color: "#fff",
 									":hover": {
-										color: "#e50914",
+										color: themes.colors.red,
 									},
 								}}
 								component={Link}
