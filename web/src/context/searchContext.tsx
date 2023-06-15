@@ -1,19 +1,18 @@
 import { createContext, useContext, useState } from "react";
 import { AnimeProps } from "../types/anime";
 import { MovieProps } from "../types/movie";
-import axios from "axios";
 import { searchMovie } from "../api/moviesApi";
-import { searchAnimeApiUrl } from "../api/animesApi";
+import { searchAnime } from "../api/animesApi";
 
 export interface SearchContextContent {
 	content: Array<MovieProps & AnimeProps> | undefined;
 	setContent: any;
 	fetchData: (
 		searchParams: string | null | undefined,
-		page: number | undefined
+		page: string | undefined
 	) => Promise<Array<MovieProps & AnimeProps>>;
 	sortContentByScore: (
-		content: Array<MovieProps & AnimeProps> | undefined,
+		content: Array<MovieProps & AnimeProps> | undefined
 	) => Array<any>;
 	filterContentByTitle: (
 		content: Array<MovieProps & AnimeProps> | undefined,
@@ -26,38 +25,20 @@ export const SearchContext = createContext<SearchContextContent>(
 );
 
 export const SearchContextProvider = ({ children }) => {
-	const bearerToken = import.meta.env.VITE_BEARER_TOKEN_MOVIE_API;
 	const [content, setContent] = useState<Array<MovieProps & AnimeProps>>();
 
 	const fetchData = async (
 		searchParams: string | null | undefined,
-		page: number | undefined
+		page: string | undefined
 	) => {
-		let tempMovies;
-		let tempAnimes;
+		if (page === undefined) {
+			page = "1";
+		}
 
-		await axios
-			.get(searchMovie(searchParams, page), {
-				method: "GET",
-				headers: {
-					accept: "application/json",
-					Authorization: `Bearer ${bearerToken}`,
-				},
-			})
-			.then(({ data }) => (tempMovies = data.results))
-			.catch((err: Error) => console.error(err));
+		const tempMovies = searchMovie(searchParams!, page);
+		const tempAnimes = searchAnime(searchParams!, page);
 
-		await axios
-			.get(searchAnimeApiUrl(searchParams, page), {
-				method: "GET",
-				headers: {
-					accept: "application/json",
-				},
-			})
-			.then(({ data }) => (tempAnimes = data.data))
-			.catch((err: Error) => console.error(err));
-
-		return [...tempAnimes, ...tempMovies];
+		return [...(await tempAnimes), ...(await tempMovies)];
 	};
 
 	function sortContentByScore(content): Array<any> {
