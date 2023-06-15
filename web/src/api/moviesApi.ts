@@ -24,6 +24,7 @@ export const getPopularMovies = async (page: string) => {
 
 	return response;
 };
+
 export const searchMovie = (searchQuery: string, page: string) => {
 	let url: URL | string = new URL("https://api.themoviedb.org/3/search/movie");
 	url.searchParams.set("query", searchQuery);
@@ -46,3 +47,21 @@ export const searchMovie = (searchQuery: string, page: string) => {
 
 	return response;
 };
+
+export const getMovieDataById = async (id: number) => {
+	const url = `https://api.themoviedb.org/3/movie/${id}`
+
+	let response;
+
+	await axios
+		.get(url, {
+			method: "GET",
+			headers: {
+				accept: "application/json",
+				Authorization: `Bearer ${bearerToken}`,
+			},
+		})
+		.then((data) => (response = data));
+
+	return response;
+}

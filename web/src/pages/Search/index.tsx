@@ -19,7 +19,7 @@ const Search = () => {
 	const [params] = useSearchParams();
 	const searchParams = params.get("search");
 
-	const page = parseInt(params.get("page") || "1", 10);
+	const page = params.get("page") || "1";
 	const { content } = useSearchContext();
 	useState<Array<MovieProps & AnimeProps>>();
 	const { fetchData, sortContentByScore, setContent, filterContentByTitle } =
@@ -53,7 +53,7 @@ const Search = () => {
 				<>
 					<ContentList contentList={content} />
 					<Pagination
-						page={page}
+						page={parseInt(page)}
 						sx={{
 							display: "flex",
 							justifyContent: "center",

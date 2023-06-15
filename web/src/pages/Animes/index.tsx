@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import Pagination from "@mui/material/Pagination";
 import PaginationItem from "@mui/material/PaginationItem";
 import { useSearchParams } from "react-router-dom";
-import axios from "axios";
 
 import { AnimesContainer } from "./styles";
 import ContentList from "../../components/ContentList";
@@ -29,7 +28,7 @@ const Animes = () => {
 			{loading && <ContentSkeleton />}
 			{!loading && (
 				<>
-					<ContentList contentList={animes} />
+					<ContentList contentList={animes} isWatchlist={false} />
 					<Pagination
 						page={page}
 						sx={{

@@ -62,6 +62,12 @@ export const ContentRating = styled.p`
 	font-weight: 400;
 `;
 
+export const ContentStatus = styled.p`
+	font-family: "Inter", sans-serif;
+	font-size: 16px;
+	font-weight: 600;
+`;
+
 export const ContentTrailer = styled.iframe`
 	width: 28rem;
 	height: 15.8rem;
@@ -99,16 +105,3 @@ export const ContentBanner = styled.img`
 	}
 `;
 
-export const AddButton = styled.button`
-	border: none;
-	background-color: ${themes.colors.red};
-	font-weight: 600;
-	padding: 1rem 2rem;
-	font-size: 16px;
-	border-radius: 8px;
-	cursor: pointer;
-	transition: all 0.1s ease-out;
-	&:hover {
-		scale: 1.04;
-	}
-`;

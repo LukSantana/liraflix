@@ -28,7 +28,7 @@ const Movies = () => {
 			{loading && <ContentSkeleton />}
 			{!loading && (
 				<>
-					<ContentList contentList={movies} />
+					<ContentList contentList={movies} isWatchlist={false} />
 					<Pagination
 						page={parseInt(page)}
 						sx={{

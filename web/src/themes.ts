@@ -1,6 +1,7 @@
 class Themes {
 	colors = {
 		red: "#e50914",
+		darkGray: "#3A3A3A"
 	};
 
 	breakpoints = {

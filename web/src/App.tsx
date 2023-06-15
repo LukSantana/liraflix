@@ -3,17 +3,22 @@ import Router from "./Router/index.tsx";
 import Header from "./components/Header/index.tsx";
 import { MainContainer } from "./styles.ts";
 import { SearchContextProvider } from "./context/searchContext.tsx";
+import { AlertContextProvider } from "./context/alertContext.tsx";
+import AlertComponent from "./components/Alert/index.tsx";
 
 function App() {
 	return (
-		<SearchContextProvider>
-			<BrowserRouter>
-				<MainContainer>
-					<Header />
-					<Router />
-				</MainContainer>
-			</BrowserRouter>
-		</SearchContextProvider>
+		<AlertContextProvider>
+			<SearchContextProvider>
+				<BrowserRouter>
+					<MainContainer>
+						<Header />
+						<Router />
+						<AlertComponent />
+					</MainContainer>
+				</BrowserRouter>
+			</SearchContextProvider>
+		</AlertContextProvider>
 	);
 }
 

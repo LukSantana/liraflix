@@ -20,8 +20,20 @@ export const getContentList = async (
 	return response;
 };
 
-export const getContent = async (contentId: string) => {
-	let url: URL | string = new URL(`${liraflixApiUrl}/content/${contentId}`);
+export const getContentById = async (contentId: string) => {
+	let url: URL | string = new URL(`${liraflixApiUrl}/content/id/${contentId}`);
+	url = url.toString();
+
+	let response;
+	await axios.get(url).then((data) => (response = data));
+
+	return response;
+};
+
+export const getContentByName = async (contentName: string) => {
+	let url: URL | string = new URL(
+		`${liraflixApiUrl}/content/name/${contentName}`
+	);
 	url = url.toString();
 
 	let response;
@@ -34,8 +46,8 @@ export const addContentToList = async (
 	content_name: string,
 	content_status: string,
 	content_type: string,
-	global_rating: number,
-	genres: string,
+	global_rating: number | string,
+	genres: Array<string>,
 	images: string
 ) => {
 	let url: URL | string = new URL(`${liraflixApiUrl}/content`);
@@ -51,6 +63,14 @@ export const addContentToList = async (
 	};
 
 	let response;
+
+	response = await getContentByName(content_name);
+
+	if (response.data) {
+		return (response = {
+			message: "O conteúdo selecionado já existe na lista.",
+		});
+	}
 	await axios.post(url.toString(), body).then((data) => (response = data));
 
 	return response;
@@ -79,6 +99,30 @@ export const deleteContent = async (content_id: string) => {
 
 	let response;
 	await axios.delete(url.toString()).then((data) => (response = data));
+
+	return response;
+};
+
+export const getGenres = async (genreName?: string, contentType?: string) => {
+	let url: URL | string = new URL(`${liraflixApiUrl}/genres`);
+	genreName && url.searchParams.set("genreName", genreName);
+	contentType && url.searchParams.set("contentType", contentType);
+	url = url.toString();
+
+	let response;
+	await axios.get(url).then((data) => (response = data));
+
+	return response;
+};
+
+export const getGenresByNames = async (genreNames: Array<string>) => {
+	let url: URL | string = new URL(
+		`${liraflixApiUrl}/genres/${genreNames.toString()}`
+	);
+	url = url.toString();
+
+	let response;
+	await axios.get(url).then((data) => (response = data));
 
 	return response;
 };
