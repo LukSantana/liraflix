@@ -49,18 +49,22 @@ const Header = () => {
 							<NavItem>{route.routeName}</NavItem>
 						</Link>
 					))}
-					{RoutesInfo.dynamicRoutes.filter((route) => route.routeName !== "Search").map((route) => {
-						return <Link
-							style={{
-								color: "transparent",
-							}}
-							to={`${route.path}?page=${1}`}
-							className="nav-item-link"
-							key={`${route.routeName}`}
-						>
-							<NavItem>{route.routeName}</NavItem>
-						</Link>;
-					})}
+					{RoutesInfo.dynamicRoutes
+						.filter((route) => route.routeName !== "Search")
+						.map((route) => {
+							return (
+								<Link
+									style={{
+										color: "transparent",
+									}}
+									to={`${route.path}?page=${1}`}
+									className="nav-item-link"
+									key={`${route.routeName}`}
+								>
+									<NavItem>{route.routeName}</NavItem>
+								</Link>
+							);
+						})}
 				</NavList>
 			</NavbarContainer>
 			<SearchAvatarContainer>

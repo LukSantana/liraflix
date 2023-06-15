@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import themes from "../../themes";
 
 export const HeaderContainer = styled.div`
 	position: fixed;
@@ -45,7 +46,7 @@ export const NavItem = styled.li`
 	transition: all 0.2s ease-in-out;
 
 	&:hover {
-		color: #e50914;
+		color: ${themes.colors.red};
 		scale: 1.1;
 	}
 `;
