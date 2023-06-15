@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
 import { MovieProps } from "../../../types/movie";
 import { AnimeProps } from "../../../types/anime";
 import {
+	AddButton,
 	ContentBanner,
 	ContentCardContainer,
 	ContentInfo,
@@ -17,7 +17,7 @@ export interface ContentCardProps {
 
 const ContentCard = ({ contentProps }: ContentCardProps) => {
 	const [toggleContentInfo, setToggleContentInfo] = useState<boolean>();
-	const { backdrop_path, title, vote_average, score, trailer, images, url } =
+	const { backdrop_path, title, vote_average, score, trailer, images } =
 		contentProps;
 	const basePosterUrl = import.meta.env.VITE_BASE_POSTER_URL;
 
@@ -30,27 +30,30 @@ const ContentCard = ({ contentProps }: ContentCardProps) => {
 		name = title;
 	} else {
 		contentScore = score;
-		bannerImg = trailer.images.maximum_image_url ? trailer.images.maximum_image_url : images.webp.large_image_url;
+		bannerImg = trailer.images.maximum_image_url
+			? trailer.images.maximum_image_url
+			: images.webp.large_image_url;
 		name = title;
 	}
 
 	return (
-		<Link to={url} style={{ color: "inherit" }} className="content_anchor">
-			<ContentCardContainer
-				onMouseEnter={() => setToggleContentInfo(true)}
-				onMouseLeave={() => setToggleContentInfo(false)}
-			>
-				{toggleContentInfo && (
-					<ContentInfo>
-						<ContentTitle>{name}</ContentTitle>
-						{contentScore !== 0 && contentScore && (
-							<ContentRating>Nota: {contentScore.toFixed(2)}</ContentRating>
-						)}
-					</ContentInfo>
-				)}
-				<ContentBanner src={!bannerImg.includes('null') ? bannerImg : 'assets/img/noimage.png'} />
-			</ContentCardContainer>
-		</Link>
+		<ContentCardContainer
+			onMouseEnter={() => setToggleContentInfo(true)}
+			onMouseLeave={() => setToggleContentInfo(false)}
+		>
+			{toggleContentInfo && (
+				<ContentInfo>
+					<ContentTitle>{name}</ContentTitle>
+					{contentScore !== 0 && contentScore && (
+						<ContentRating>Nota: {contentScore.toFixed(2)}</ContentRating>
+					)}
+					<AddButton>Adicionar à Lista</AddButton>
+				</ContentInfo>
+			)}
+			<ContentBanner
+				src={!bannerImg.includes("null") ? bannerImg : "assets/img/noimage.png"}
+			/>
+		</ContentCardContainer>
 	);
 };
 
