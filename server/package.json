@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "npx nodemon ./src/server.ts"
+    "dev": "npx nodemon ./src/server.ts",
+    "studio": "npx prisma studio"
   },
   "author": "Luk",
   "license": "ISC",

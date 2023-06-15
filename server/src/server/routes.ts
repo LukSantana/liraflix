@@ -134,4 +134,21 @@ router.put("/content/:id", async (req: Request, res: Response) => {
 	}
 });
 
+router.delete("/content/:id", async (req: Request, res: Response) => {
+	try {
+		const contentId = req.params.id;
+
+		const response = await prisma.contentList.delete({
+			where: {
+				id: contentId,
+			},
+		});
+
+		return res.status(200).json(response);
+	} catch (e: any | undefined) {
+		throw new Error(e.message);
+	}
+});
+
+
 export default router;
