@@ -51,7 +51,7 @@ const Search = () => {
 			{noContent && <NoContentWarning />}
 			{!noContent && content !== undefined && (
 				<>
-					<ContentList contentList={content} />
+					<ContentList contentList={content} isWatchlist={false}/>
 					<Pagination
 						page={parseInt(page)}
 						sx={{
