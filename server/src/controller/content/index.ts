@@ -7,11 +7,16 @@ import getContentByQuery from "./getContentByQuery";
 import createContent from "./createContent";
 import updateContent from "./updateContent";
 import deleteContent from "./deleteContent";
+import getRandomContent from "./getRandomContent";
 
 const contentRouter = Router();
 
 contentRouter.get("/content", async (req: Request, res: Response): Promise<any> => {
   return await getContentByQuery.execute(req, res)
+})
+
+contentRouter.get("/content/random", async (req: Request, res: Response): Promise<any> => {
+  return await getRandomContent.execute(req, res)
 })
 
 contentRouter.post("/content", async (req: Request, res: Response) => {

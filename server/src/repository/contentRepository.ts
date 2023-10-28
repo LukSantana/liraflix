@@ -2,7 +2,7 @@ import { PrismaClient } from "@prisma/client";
 import { randomUUID } from "crypto";
 
 class ContentRepository {
-  async getContentList(
+  async getContent(
     id: string,
     name: string,
     content_status: string,
@@ -124,6 +124,23 @@ class ContentRepository {
         where: {
           id: contentId,
         },
+      });
+
+      return response;
+    } catch (e: any) {
+      throw new Error(e);
+    }
+  }
+
+  async getRandomContent(
+    databaseConnection: PrismaClient,
+  ) {
+    try {
+      const contentCount = await databaseConnection.contentList.count();
+      const skip = Math.floor(Math.random() * contentCount);
+
+      let response = await databaseConnection.contentList.findFirst({
+        skip: skip,
       });
 
       return response;
