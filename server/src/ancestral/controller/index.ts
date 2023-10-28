@@ -41,37 +41,40 @@ abstract class AncestralController {
     }
   }
 
-  getIntParam(request: Request, paramName: string): number {
+  getIntParam(request: Request, paramName: string, required?: true): number {
     const param = request.params[paramName];
-    if (typeof param === 'undefined') {
+
+    if (required && typeof param === 'undefined') {
       throw new Error(`Missing required parameter: ${paramName}`);
     }
     const parsedParam = parseInt(param, 10);
 
-    if (isNaN(parsedParam)) {
+    if (required && isNaN(parsedParam)) {
       throw new Error(`Invalid parameter type: ${paramName}. Expected integer.`);
     }
 
     return parsedParam;
   }
 
-  getFloatParam(request: Request, paramName: string): number {
+  getFloatParam(request: Request, paramName: string, required?: true): number {
     const param = request.params[paramName];
-    if (typeof param === 'undefined') {
+
+    if (required && typeof param === 'undefined') {
       throw new Error(`Missing required parameter: ${paramName}`);
     }
     const parsedParam = parseFloat(param);
 
-    if (isNaN(parsedParam)) {
+    if (required && isNaN(parsedParam)) {
       throw new Error(`Invalid parameter type: ${paramName}. Expected float.`);
     }
 
     return parsedParam;
   }
 
-  getFloatQueryParam(request: Request, paramName: string): number {
+  getFloatQueryParam(request: Request, paramName: string, required?: true): number {
     const param = request.query[paramName];
-    if (typeof param === 'undefined') {
+
+    if (required && typeof param === 'undefined') {
       throw new Error(`Missing required query parameter: ${paramName}`);
     }
 
@@ -81,76 +84,79 @@ abstract class AncestralController {
       parsedParam = parseFloat(param);
     }
 
-    if (isNaN(parsedParam)) {
+    if (required && isNaN(parsedParam)) {
       throw new Error(`Invalid query parameter type: ${paramName}. Expected float.`);
     }
 
     return parsedParam!;
   }
 
-  getStringParam(request: Request, paramName: string): string {
+  getStringParam(request: Request, paramName: string, required?: true): string {
     const param = request.params[paramName];
 
-    if (typeof param === 'undefined') {
+    if (required && typeof param === 'undefined') {
       throw new Error(`Missing required parameter: ${paramName}`);
     }
 
-    if (typeof param !== 'string') {
+    if (required && typeof param !== 'string') {
       throw new Error(`Invalid parameter type: ${paramName}. Expected string.`);
     }
 
     return param;
   }
 
-  getIntBodyAtt(request: Request, attributeName: string): number {
+  getIntBodyAtt(request: Request, attributeName: string, required?: true): number {
     const param = request.body[attributeName];
-    if (typeof param === 'undefined') {
+
+    if (required && typeof param === 'undefined') {
       throw new Error(`Missing required parameter: ${attributeName}`);
     }
     const parsedParam = parseInt(param, 10);
 
-    if (isNaN(parsedParam)) {
+    if (required && isNaN(parsedParam)) {
       throw new Error(`Invalid parameter type: ${attributeName}. Expected integer.`);
     }
 
     return parsedParam;
   }
 
-  getFloatBodyAtt(request: Request, attributeName: string): number {
+  getFloatBodyAtt(request: Request, attributeName: string, required?: true): number {
     const param = request.body[attributeName];
-    if (typeof param === 'undefined') {
+
+    if (required && typeof param === 'undefined') {
       throw new Error(`Missing required parameter: ${attributeName}`);
     }
     const parsedParam = parseFloat(param);
 
-    if (isNaN(parsedParam)) {
+    if (required && isNaN(parsedParam)) {
       throw new Error(`Invalid parameter type: ${attributeName}. Expected float.`);
     }
 
     return parsedParam;
   }
 
-  getBoolBodyAtt(request: Request, attributeName: string): boolean {
+  getBoolBodyAtt(request: Request, attributeName: string, required?: true): boolean {
     const param = request.body[attributeName];
-    if (typeof param === 'undefined') {
+
+    if (required && typeof param === 'undefined') {
       throw new Error(`Missing required parameter: ${attributeName}`);
     }
 
-    if (typeof param !== 'boolean') {
+    if (required && typeof param !== 'boolean') {
       throw new Error(`Invalid parameter type: ${attributeName}. Expected boolean.`);
     }
 
     return param;
   }
 
-  getStringBodyAtt(request: Request, paramName: string): string {
+  getStringBodyAtt(request: Request, paramName: string, required = true): string {
     const param = request.body[paramName];
 
-    if (typeof param === 'undefined') {
+    if (required && typeof param === 'undefined') {
       throw new Error(`Missing required parameter: ${paramName}`);
     }
 
-    if (typeof param !== 'string') {
+    if (required && typeof param !== 'string') {
       throw new Error(`Invalid parameter type: ${paramName}. Expected string.`);
     }
 

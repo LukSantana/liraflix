@@ -5,10 +5,10 @@ import { Request, Response } from "express";
 class getContentByQuery extends AncestralController {
   async exec(req: Request, res: Response): Promise<any> {
     try {
-      const contentId = this.getStringBodyAtt(req, 'id');
-      const contentName = this.getStringBodyAtt(req, 'name');
-      const contentStatus = this.getStringBodyAtt(req, 'status');
-      const contentType = this.getStringBodyAtt(req, 'type');
+      const contentId = this.getStringBodyAtt(req, 'id', false);
+      const contentName = this.getStringBodyAtt(req, 'name', false);
+      const contentStatus = this.getStringBodyAtt(req, 'status', false);
+      const contentType = this.getStringBodyAtt(req, 'type', false);
 
       const connection = await this.openDatabaseConnection();
 
