@@ -1,10 +1,16 @@
 import { Router } from "express";
-import contentRouter from "../routes/contentRoutes";
-import genresRouter from "../routes/genresRoutes";
+import {
+  contentRoutes,
+  genresRoutes,
+  statusRoutes
+} from "@controller/index";
+import Swagger from "../swagger";
 
 const router = Router();
 
-router.use(contentRouter);
-router.use(genresRouter);
+router.use(contentRoutes);
+router.use(genresRoutes);
+router.use(statusRoutes)
+router.use(Swagger)
 
 export default router;
