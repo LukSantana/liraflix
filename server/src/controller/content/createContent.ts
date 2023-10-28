@@ -5,11 +5,11 @@ import { Request, Response } from "express";
 class createContent extends AncestralController {
   async exec(req: Request, res: Response): Promise<any> {
     try {
-      const contentName = this.getStringBodyAtt(req, 'name');
-      const contentStatus = this.getStringBodyAtt(req, 'content_status');
-      const contentType = this.getStringBodyAtt(req, 'content_type');
-      const globalRating = this.getFloatBodyAtt(req, 'content_type');
-      const personalRating = this.getFloatBodyAtt(req, 'personal_rating');
+      const contentName = this.getStringBodyAtt(req, 'contentName');
+      const contentStatus = this.getStringBodyAtt(req, 'contentStatus');
+      const contentType = this.getStringBodyAtt(req, 'contentType');
+      const globalRating = this.getFloatBodyAtt(req, 'contentType');
+      const personalRating = this.getFloatBodyAtt(req, 'personalRating');
       const genres = this.getStringBodyAtt(req, 'genres');
       const images = this.getStringBodyAtt(req, 'images');
 
