@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MovieProps } from "../../../types/movie";
 import { AnimeProps } from "../../../types/anime";
 import {
@@ -19,19 +19,22 @@ import { CircularProgress } from "@mui/material";
 import { useAlertContext } from "../../../context/alertContext";
 import { ContentProps } from "../../../types/content";
 import Button from "../../Button";
+import { translateStatus } from "../../../utils/translateStatus";
 
 export interface ContentCardProps {
 	contentProps: AnimeProps & MovieProps & ContentProps;
 	isWatchlist?: boolean;
-	showUpdateForm: boolean;
 	setShowUpdateForm: any;
+	setContentId: any;
+	setOldContentStatus: any;
 }
 
 const ContentCard = ({
 	contentProps,
 	isWatchlist,
-	showUpdateForm,
 	setShowUpdateForm,
+	setContentId,
+	setOldContentStatus,
 }: ContentCardProps) => {
 	const [toggleContentInfo, setToggleContentInfo] = useState<boolean>();
 	const [loading, setLoading] = useState<boolean>();
@@ -71,36 +74,38 @@ const ContentCard = ({
 		const images =
 			contentProps.images?.webp?.image_url ||
 			`${basePosterUrl}/${contentProps.poster_path}`;
-		const genres: Array<string> = [];
+		let genres = "";
 		if (contentProps.genres) {
-			contentProps.genres.forEach((genre) => genres.push(genre.name));
+			contentProps.genres.forEach((genre) => (genres += `${genre.name},`));
 		} else if (contentProps.genre_ids) {
 			await getMovieDataById(contentProps.id).then((response) =>
 				response.data.genres.forEach((genre) => {
-					genres?.push(genre.name);
+					genres += `${genre.name},`;
 				})
 			);
 		}
 
-		const response = await addContentToList(
+		const response = await addContentToList({
 			contentName,
 			contentStatus,
 			contentType,
-			rating,
+			globalRating: rating,
 			genres,
-			images
-		);
-		if (response.message) {
-			setAlertInfo({ message: response.message, type: "warning" });
+			images,
+		});
+		if (response) {
+			if ("data" in response && response.data && response.data.message) {
+				setAlertInfo({ message: response.data.message, type: "warning" });
+			}
+			setTimeout(
+				() =>
+					setAlertInfo({
+						message: "",
+						type: "",
+					}),
+				3000
+			);
 		}
-		setTimeout(
-			() =>
-				setAlertInfo({
-					message: "",
-					type: "",
-				}),
-			3000
-		);
 		setLoading(false);
 	};
 
@@ -109,47 +114,33 @@ const ContentCard = ({
 		const contentId = contentProps.id.toString();
 
 		const response = await updateContentStatus(contentId, "");
-		if (response.message) {
-			setAlertInfo({ message: response.message, type: "warning" });
+		console.log(response);
+		if (response) {
+			if ("data" in response && response.data && response.data.message) {
+				setAlertInfo({ message: response.data.message, type: "warning" });
+				setTimeout(
+					() =>
+						setAlertInfo({
+							message: "",
+							type: "",
+						}),
+					3000
+				);
+			}
 		}
-		setTimeout(
-			() =>
-				setAlertInfo({
-					message: "",
-					type: "",
-				}),
-			3000
-		);
 		setLoading(false);
 	};
 
-	let contentStatus;
+	let contentStatus = "";
 
-	switch (contentProps.content_status) {
-		case "0755b68e-e00d-4e1c-a631-38d81e48cc19": {
-			contentStatus = "Em espera";
-			break;
-		}
-		case "07be2da2-00f9-4501-a129-9cb5b3f3f5c9": {
-			contentStatus = "Assistindo";
-			break;
-		}
-		case "ce6969fb-530f-4273-9518-eafe4d17f977": {
-			contentStatus = "Droppado";
-			break;
-		}
-		case "da3cea2f-4d6f-461c-832c-4047cc550ba1": {
-			contentStatus = "Planeja Assistir";
-			break;
-		}
-		case "df4b8791-8750-4956-88ba-a2c241c16914": {
-			contentStatus = "Assistido";
-			break;
-		}
-		default: {
-			contentStatus = "Não foi possível recuperar o status";
-		}
-	}
+	useEffect(() => {
+		async () => {
+			const translatedStatus = await translateStatus(
+				contentProps.content_status
+			);
+			contentStatus = translatedStatus;
+		};
+	}, []);
 
 	return (
 		<ContentCardContainer
@@ -160,7 +151,9 @@ const ContentCard = ({
 				<ContentInfo>
 					<ContentTitle>{name}</ContentTitle>
 					{contentScore !== 0 && contentScore && (
-						<ContentRating>Nota: {contentScore.toFixed(2)}</ContentRating>
+						<ContentRating>
+							Nota: {Number(contentScore).toFixed(2)}
+						</ContentRating>
 					)}
 					{isWatchlist && (
 						<ContentStatus>Status: {contentStatus}</ContentStatus>
@@ -174,7 +167,14 @@ const ContentCard = ({
 							)}
 						</Button>
 					) : (
-						<Button onClick={() => setShowUpdateForm(!!showUpdateForm)}>
+						<Button
+							onClick={() => {
+								setContentId(contentProps.id);
+								setOldContentStatus(contentProps.content_status);
+								handleUpdateStatus(contentProps);
+								setShowUpdateForm(true);
+							}}
+						>
 							{loading ? (
 								<CircularProgress sx={{ color: "#fff;" }} />
 							) : (
@@ -185,7 +185,7 @@ const ContentCard = ({
 				</ContentInfo>
 			)}
 			<ContentBanner
-				src={!bannerImg.includes("null") ? bannerImg : "assets/img/noimage.png"}
+				src={bannerImg !== "null" ? bannerImg : "assets/img/noimage.png"}
 			/>
 		</ContentCardContainer>
 	);

@@ -1,13 +1,33 @@
 import { Alert } from "@mui/material";
 import { useAlertContext } from "../../context/alertContext";
+import { useEffect } from "react";
+import { keyframes } from "styled-components";
 
 const AlertComponent = () => {
-	const { alertInfo } = useAlertContext();
+	const { alertInfo, setAlertInfo } = useAlertContext();
+
+	const removeAlert = () => {
+		setTimeout(() => {
+			setAlertInfo();
+		}, 5000);
+	};
+
+	useEffect(() => removeAlert, [alertInfo]);
+
+	const alertFadeInAnimation = keyframes`
+	from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+	`;
+
 	return alertInfo?.message ? (
 		<Alert
 			severity={alertInfo?.type}
 			sx={{
-				width: '40%',
+				width: "40%",
 				position: "absolute",
 				zIndex: 1000,
 				top: "90vh",
@@ -15,7 +35,7 @@ const AlertComponent = () => {
 				right: 0,
 				marginLeft: "auto",
 				marginRight: "auto",
-				transition: "all 0.2s ease-out",
+				animation: `${alertFadeInAnimation} 1s ease-out`,
 			}}
 		>
 			{alertInfo?.message}

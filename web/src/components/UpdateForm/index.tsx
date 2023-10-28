@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { updateContentStatus } from "../../api/liraflixApi";
+import OutsideClickHandler from "react-outside-click-handler";
 import Button from "../Button";
 import {
 	InputWrapper,
@@ -10,37 +11,55 @@ import {
 	UpdateFormContainer,
 	UpdateFormWrapper,
 } from "./styles";
+import { useAlertContext } from "../../context/alertContext";
+import { possibleStatus } from "../../utils/translateStatus";
 
-const UpdateForm = ({ contentId }) => {
-	const [contentStatus, setContentStatus] = useState<string>("Plan to Watch");
+const UpdateForm = ({ contentId, oldContentStatus, setShowUpdateForm }) => {
+	const [contentStatus, setContentStatus] = useState<string>("");
+	const { setAlertInfo } = useAlertContext();
 
-  const handleUpdate = (event) => {
+	const handleUpdate = async (event) => {
 		event.preventDefault();
 
-		updateContentStatus(contentId, contentStatus);
+		const response = await updateContentStatus(contentId, contentStatus);
+		if (response?.status === 200) {
+			setAlertInfo({
+				message: `O conteúdo ${response.data.name} teve seu status atualizado para ${contentStatus}.`,
+				type: "success",
+			});
+		} else {
+			setAlertInfo({
+				message: `Não foi possível atualizar o status do conteúdo.`,
+				type: "error",
+			});
+		}
+
+		setShowUpdateForm(false);
 	};
 
 	return (
 		<>
 			<Overlay>
-				<UpdateFormContainer>
-					<UpdateFormWrapper>
-						<InputWrapper>
-							<Label>Status:</Label>
-							<Select
-								defaultValue="Plan to Watch"
-								onChange={(e) => setContentStatus(e.target.value)}
-							>
-								<Option value="Plan to Watch">Planeja Assistir</Option>
-								<Option value="Watching">Assistindo</Option>
-								<Option value="Dropped">Droppado</Option>
-								<Option value="Completed">Assistido</Option>
-								<Option value="On Wait">Em espera</Option>
-							</Select>
-						</InputWrapper>
-						<Button onClick={handleUpdate}>Atualizar</Button>
-					</UpdateFormWrapper>
-				</UpdateFormContainer>
+				<OutsideClickHandler onOutsideClick={() => setShowUpdateForm(false)}>
+					<UpdateFormContainer>
+						<UpdateFormWrapper>
+							<InputWrapper>
+								<Label>Status:</Label>
+								<Select
+									defaultValue={oldContentStatus}
+									onChange={(e) => setContentStatus(e.target.value)}
+								>
+									{possibleStatus.map((status) => (
+										<Option value={status.status} key={status.id}>
+											{status.translation}
+										</Option>
+									))}
+								</Select>
+							</InputWrapper>
+							<Button onClick={handleUpdate}>Atualizar</Button>
+						</UpdateFormWrapper>
+					</UpdateFormContainer>
+				</OutsideClickHandler>
 			</Overlay>
 		</>
 	);

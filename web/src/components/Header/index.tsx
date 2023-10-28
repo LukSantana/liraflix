@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { RoutesInfo } from "../../utils/routesInfo";
+import { routesInfo } from "../../utils/routesInfo";
 import {
 	HeaderContainer,
 	HeaderLogo,
@@ -37,7 +37,7 @@ const Header = () => {
 					<HeaderLogo src="assets/img/logo.png" />
 				</Link>
 				<NavList>
-					{RoutesInfo.basicRoutes.map((route) => (
+					{routesInfo.basicRoutes.map((route) => (
 						<Link
 							style={{
 								color: "transparent",
@@ -49,7 +49,7 @@ const Header = () => {
 							<NavItem>{route.routeName}</NavItem>
 						</Link>
 					))}
-					{RoutesInfo.dynamicRoutes
+					{routesInfo.dynamicRoutes
 						.filter((route) => route.routeName !== "Search")
 						.map((route) => {
 							return (

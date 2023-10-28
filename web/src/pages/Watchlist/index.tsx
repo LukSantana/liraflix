@@ -9,7 +9,7 @@ import ContentList from "../../components/ContentList";
 import { MovieProps } from "../../types/movie";
 import ContentSkeleton from "../../components/ContentList/ContentSkeleton";
 import themes from "../../themes";
-import { getContentList } from "../../api/liraflixApi";
+import { getContent } from "../../api/liraflixApi";
 
 const Watchlist = () => {
 	const [loading, setLoading] = useState<boolean>(true);
@@ -18,8 +18,8 @@ const Watchlist = () => {
 	const page = searchParams.get("page") || "1";
 
 	useEffect(() => {
-		getContentList(page)
-			.then((response) => setContent(response.data))
+		getContent({})
+			.then((response) => setContent(response?.data))
 			.then(() => setLoading(false));
 	}, []);
 
@@ -28,7 +28,7 @@ const Watchlist = () => {
 			{loading && <ContentSkeleton />}
 			{!loading && (
 				<>
-					<ContentList contentList={content} isWatchlist={true}/>
+					<ContentList contentList={content} isWatchlist={true} />
 					<Pagination
 						page={parseInt(page)}
 						sx={{

@@ -11,7 +11,7 @@ interface RoutesProps {
 	element: JSX.Element;
 }
 
-class routesInfo {
+class RoutesInfo {
 	basicRoutes: Array<RoutesProps>;
 	dynamicRoutes: Array<RoutesProps>;
 
@@ -54,4 +54,4 @@ class routesInfo {
 	}
 }
 
-export const RoutesInfo = new routesInfo();
+export const routesInfo = new RoutesInfo();
