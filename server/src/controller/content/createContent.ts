@@ -5,25 +5,22 @@ import { Request, Response } from "express";
 class createContent extends AncestralController {
   async exec(req: Request, res: Response): Promise<any> {
     try {
-      const body = req.body;
-      const contentName = body.name;
-      const {
-        content_status,
-        content_type,
-        global_rating,
-        personal_rating,
-        genres,
-        images
-      } = body
+      const contentName = this.getStringBodyAtt(req, 'name');
+      const contentStatus = this.getStringBodyAtt(req, 'content_status');
+      const contentType = this.getStringBodyAtt(req, 'content_type');
+      const globalRating = this.getFloatBodyAtt(req, 'content_type');
+      const personalRating = this.getFloatBodyAtt(req, 'personal_rating');
+      const genres = this.getStringBodyAtt(req, 'genres');
+      const images = this.getStringBodyAtt(req, 'images');
 
       const connection = await this.openDatabaseConnection();
 
       const response = await contentRepository.createContent(
         contentName,
-        content_status,
-        content_type,
-        global_rating,
-        personal_rating,
+        contentStatus,
+        contentType,
+        globalRating,
+        personalRating,
         genres,
         images,
         connection!,

@@ -38,8 +38,8 @@ class ContentRepository {
     content_type: string,
     global_rating: number,
     personal_rating: number,
-    genres: string[],
-    images: string[],
+    genres: string,
+    images: string,
     databaseConnection: PrismaClient,
   ) {
     try {
@@ -76,7 +76,7 @@ class ContentRepository {
         content_type: contentType,
         global_rating: globalRating,
         personal_rating: personalRating && personalRating,
-        genres: `[${genres.join(',')}]`,
+        genres: genres,
         images: images,
       };
 

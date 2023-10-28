@@ -5,9 +5,8 @@ import { Request, Response } from "express";
 class updateContent extends AncestralController {
   async exec(req: Request, res: Response): Promise<any> {
     try {
-      const contentId = req.params.id;
-      const contentStatus = req.body.content_status;
-
+      const contentId = this.getStringParam(req, 'id');
+      const contentStatus = this.getStringParam(req, 'content_status');
 
       const connection = await this.openDatabaseConnection();
 

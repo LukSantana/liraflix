@@ -5,7 +5,7 @@ import { Request, Response } from "express";
 class deleteContent extends AncestralController {
   async exec(req: Request, res: Response): Promise<any> {
     try {
-      const contentId = req.params.id;
+      const contentId = this.getStringBodyAtt(req, 'id');
 
       const connection = await this.openDatabaseConnection();
 

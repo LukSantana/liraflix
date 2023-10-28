@@ -14,5 +14,5 @@ app.use(express.json());
 app.use(APP_ROUTER_PREFIX, routes);
 
 app.listen(serverPort, () =>
-	console.log(`Server running on port ${serverPort}`)
+	console.info(`Server running on port ${serverPort}`)
 );
