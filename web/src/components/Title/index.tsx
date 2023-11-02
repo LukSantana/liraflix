@@ -1,9 +1,11 @@
-import { TitleComponent } from "./styles"
+import { TitleComponent } from "./styles";
 
-const Title = ({children}) => {
-  return (
-    <TitleComponent>{children}</TitleComponent>
-  )
+interface TitleProps {
+	children: string | JSX.Element;
 }
 
-export default Title
+const Title = ({ children }: TitleProps) => {
+	return <TitleComponent>{children}</TitleComponent>;
+};
+
+export default Title;

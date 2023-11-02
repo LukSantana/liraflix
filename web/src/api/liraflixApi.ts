@@ -79,7 +79,7 @@ export const addContentToList = async ({
 };
 
 export const updateContentStatus = async (
-	content_id: string,
+	content_id: string | number,
 	content_status: string
 ) => {
 	let url: URL | string = new URL(`${liraflixApiUrl}/content/${content_id}`);
@@ -96,7 +96,6 @@ export const updateContentStatus = async (
 };
 
 export const getStatusNameById = async (contentStatusId: string) => {
-	console.log(contentStatusId);
 	let url: URL | string = new URL(
 		`${liraflixApiUrl}/status/${contentStatusId}`
 	);

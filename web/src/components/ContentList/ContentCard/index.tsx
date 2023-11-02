@@ -24,9 +24,9 @@ import { translateStatus } from "../../../utils/translateStatus";
 export interface ContentCardProps {
 	contentProps: AnimeProps & MovieProps & ContentProps;
 	isWatchlist?: boolean;
-	setShowUpdateForm: any;
-	setContentId: any;
-	setOldContentStatus: any;
+	setShowUpdateForm: (showUpdateForm: boolean) => void;
+	setContentId: (contentId: number | string) => void;
+	setOldContentStatus: (contentStatus: string) => void;
 }
 
 const ContentCard = ({

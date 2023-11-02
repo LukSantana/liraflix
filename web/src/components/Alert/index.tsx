@@ -21,6 +21,7 @@ const AlertComponent = () => {
 
   to {
     opacity: 1;
+	}
 	`;
 
 	return alertInfo?.message ? (

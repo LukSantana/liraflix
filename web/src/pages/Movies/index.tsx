@@ -5,10 +5,10 @@ import PaginationItem from "@mui/material/PaginationItem";
 import { useSearchParams } from "react-router-dom";
 
 import { MoviesContainer } from "./styles";
-import ContentList from "../../components/ContentList";
-import { getPopularMovies } from "../../api/moviesApi";
-import { MovieProps } from "../../types/movie";
-import ContentSkeleton from "../../components/ContentList/ContentSkeleton";
+import ContentList from "@components/ContentList";
+import { getPopularMovies } from "@api/moviesApi";
+import { MovieProps } from "@types/movie";
+import ContentSkeleton from "@components/ContentList/ContentSkeleton";
 import themes from "../../themes";
 
 const Movies = () => {

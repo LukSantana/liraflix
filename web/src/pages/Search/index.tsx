@@ -5,13 +5,13 @@ import PaginationItem from "@mui/material/PaginationItem";
 import { useSearchParams } from "react-router-dom";
 
 import { SearchPageContainer } from "./styles";
-import ContentList from "../../components/ContentList";
-import { useSearchContext } from "../../context/searchContext";
-import { MovieProps } from "../../types/movie";
-import { AnimeProps } from "../../types/anime";
-import NoContentWarning from "../../components/ContentList/NoContentWarning";
-import ContentSkeleton from "../../components/ContentList/ContentSkeleton";
-import themes from "../../themes";
+import ContentList from "@components/ContentList";
+import { useSearchContext } from "@context/searchContext";
+import { MovieProps } from "@types/movie";
+import { AnimeProps } from "@types/anime";
+import NoContentWarning from "@components/ContentList/NoContentWarning";
+import ContentSkeleton from "@components/ContentList/ContentSkeleton";
+import themes from "@themes";
 
 const Search = () => {
 	const [loading, setLoading] = useState<boolean>(true);

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { MouseEventHandler, useState } from "react";
 import { updateContentStatus } from "../../api/liraflixApi";
 import OutsideClickHandler from "react-outside-click-handler";
 import Button from "../Button";
@@ -14,11 +14,21 @@ import {
 import { useAlertContext } from "../../context/alertContext";
 import { possibleStatus } from "../../utils/translateStatus";
 
-const UpdateForm = ({ contentId, oldContentStatus, setShowUpdateForm }) => {
+interface UpdateFormProps {
+	contentId: string | number;
+	oldContentStatus: string;
+	setShowUpdateForm: (showUpdateForm: boolean) => void;
+}
+
+const UpdateForm = ({
+	contentId,
+	oldContentStatus,
+	setShowUpdateForm,
+}: UpdateFormProps) => {
 	const [contentStatus, setContentStatus] = useState<string>("");
 	const { setAlertInfo } = useAlertContext();
 
-	const handleUpdate = async (event) => {
+	const handleUpdate = async (event: any) => {
 		event.preventDefault();
 
 		const response = await updateContentStatus(contentId, contentStatus);
@@ -56,7 +66,9 @@ const UpdateForm = ({ contentId, oldContentStatus, setShowUpdateForm }) => {
 									))}
 								</Select>
 							</InputWrapper>
-							<Button onClick={handleUpdate}>Atualizar</Button>
+							<Button onClick={(event: any) => handleUpdate(event)}>
+								Atualizar
+							</Button>
 						</UpdateFormWrapper>
 					</UpdateFormContainer>
 				</OutsideClickHandler>

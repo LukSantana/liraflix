@@ -4,12 +4,12 @@ import Pagination from "@mui/material/Pagination";
 import PaginationItem from "@mui/material/PaginationItem";
 import { useSearchParams } from "react-router-dom";
 
+import ContentList from "@components/ContentList";
+import { MovieProps } from "@types/movie";
+import ContentSkeleton from "@components/ContentList/ContentSkeleton";
+import { getContent } from "@api/liraflixApi";
+import themes from "@themes";
 import { WatchlistContainer } from "./styles";
-import ContentList from "../../components/ContentList";
-import { MovieProps } from "../../types/movie";
-import ContentSkeleton from "../../components/ContentList/ContentSkeleton";
-import themes from "../../themes";
-import { getContent } from "../../api/liraflixApi";
 
 const Watchlist = () => {
 	const [loading, setLoading] = useState<boolean>(true);

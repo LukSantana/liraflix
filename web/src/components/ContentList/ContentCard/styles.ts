@@ -3,6 +3,7 @@ import themes from "../../../themes";
 
 export const ContentCardContainer = styled.div`
 	position: relative;
+	width: 20%;
 	transition: all 0.1s ease-out;
 	border-radius: 8px;
 
@@ -23,9 +24,9 @@ export const ContentInfo = styled.div`
 	text-align: center;
 	position: absolute;
 	padding: 2rem;
-	width: 28rem;
+	width: 100%;
 	height: 15.8rem;
-
+/* 
 	@media only screen and (${themes.devices.mobileS}) {
 		width: 100%;
 		height: 15.8rem;
@@ -49,7 +50,7 @@ export const ContentInfo = styled.div`
 	@media only screen and (${themes.devices.desktopL}) {
 		width: 32rem;
 		height: 15.8rem;
-	}
+	} */
 `;
 
 export const ContentTitle = styled.h2`
@@ -78,10 +79,10 @@ export const ContentTrailer = styled.iframe`
 export const ContentBanner = styled.img`
 	object-fit: cover;
 	z-index: 2;
-	width: 28rem;
+	width: 100%;
 	height: 15.8rem;
 	border-radius: 8px;
-
+/* 
 	@media only screen and (${themes.devices.mobileS}) {
 		width: 100%;
 		height: 15.8rem;
@@ -105,6 +106,6 @@ export const ContentBanner = styled.img`
 	@media only screen and (${themes.devices.desktopL}) {
 		width: 32rem;
 		height: 15.8rem;
-	}
+	} */
 `;
 

@@ -3,9 +3,14 @@ import ContentCard from "./ContentCard";
 import { ContentListContainer } from "./styles";
 import UpdateForm from "../UpdateForm";
 
-const ContentsList = ({ contentList, isWatchlist }) => {
+interface ContentListProps {
+	contentList: any[];
+	isWatchlist?: boolean;
+}
+
+const ContentsList = ({ contentList, isWatchlist }: ContentListProps) => {
 	const [showUpdateForm, setShowUpdateForm] = useState<boolean>(false);
-	const [contentId, setContentId] = useState<number>();
+	const [contentId, setContentId] = useState<string | number>();
 	const [oldContentStatus, setOldContentStatus] = useState<string>();
 
 	return (
@@ -22,8 +27,8 @@ const ContentsList = ({ contentList, isWatchlist }) => {
 			))}
 			{showUpdateForm && (
 				<UpdateForm
-					oldContentStatus={oldContentStatus}
-					contentId={contentId}
+					oldContentStatus={oldContentStatus!}
+					contentId={contentId!}
 					setShowUpdateForm={setShowUpdateForm}
 				/>
 			)}
