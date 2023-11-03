@@ -10,7 +10,7 @@ import { MovieProps } from "@src/types/movie";
 import { AnimeProps } from "@src/types/anime";
 import { translateStatus } from "@utils/translateStatus";
 import Button from "@components/Button";
-import "@src/styles.css";
+import "./styles.css";
 import {
 	ContentBanner,
 	ContentCardContainer,
