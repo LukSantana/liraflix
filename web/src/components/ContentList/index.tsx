@@ -9,7 +9,7 @@ interface ContentListProps {
 	isWatchlist?: boolean;
 }
 
-const ContentsList = ({ contentList, isWatchlist }: ContentListProps) => {
+const ContentList = ({ contentList, isWatchlist }: ContentListProps) => {
 	const [showUpdateForm, setShowUpdateForm] = useState<boolean>(false);
 	const [contentId, setContentId] = useState<string | number>();
 	const [oldContentStatus, setOldContentStatus] = useState<string>();
@@ -37,4 +37,4 @@ const ContentsList = ({ contentList, isWatchlist }: ContentListProps) => {
 	);
 };
 
-export default ContentsList;
+export default ContentList;

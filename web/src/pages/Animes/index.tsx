@@ -18,10 +18,10 @@ const Animes = () => {
 	const page = parseInt(searchParams.get("page") || "1", 10);
 
 	useEffect(() => {
-		getBestAnime(searchParams.get("page")!).then((response) =>
-			setAnimes(response.data.data)
-		);
-		setLoading(false);
+		getBestAnime(searchParams.get("page")!).then((response) => {
+			setAnimes(response.data.data);
+			setLoading(false);
+		});
 	}, []);
 
 	return (

@@ -10,7 +10,6 @@ export const ButtonWrapper = styled.button`
 	border-radius: 8px;
 	cursor: pointer;
 	transition: all 0.1s ease-out;
-	width: 15rem;
 	&:hover {
 		scale: 1.04;
 	}

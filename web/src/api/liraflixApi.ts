@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from "axios";
-import { liraflixApiUrl } from "../environment";
+import { liraflixApiUrl } from "@src/environment";
 
 export const getContent = async (
 	{

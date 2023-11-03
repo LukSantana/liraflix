@@ -20,9 +20,10 @@ const Watchlist = () => {
 	const page = searchParams.get("page") || "1";
 
 	useEffect(() => {
-		getContent({})
-			.then((response) => setContent(response?.data))
-			.then(() => setLoading(false));
+		getContent({}).then((response) => {
+			setContent(response?.data);
+			setLoading(false);
+		});
 	}, []);
 
 	return (

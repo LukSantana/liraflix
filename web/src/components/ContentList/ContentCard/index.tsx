@@ -12,9 +12,11 @@ import { translateStatus } from "@utils/translateStatus";
 import Button from "@components/Button";
 import "./styles.css";
 import {
+	ButtonContainer,
 	ContentBanner,
 	ContentCardContainer,
 	ContentInfo,
+	ContentInfoText,
 	ContentRating,
 	ContentStatus,
 	ContentTitle,
@@ -35,35 +37,16 @@ const ContentCard = ({
 	setContentId,
 	setOldContentStatus,
 }: ContentCardProps) => {
-	const [toggleContentInfo, setToggleContentInfo] = useState<boolean>();
-	const [loading, setLoading] = useState<boolean>();
-	const { backdrop_path, title, vote_average, score, trailer, images } =
-		contentProps;
-	const basePosterUrl = import.meta.env.VITE_BASE_POSTER_URL;
 	const { setAlertInfo } = useAlertContext();
 
-	let contentScore: number;
-	let bannerImg: string;
-	let name: string;
-	let contentType: string;
-	if (contentProps.broadcast) {
-		contentType = "Anime";
-		contentScore = vote_average;
-		bannerImg = `${basePosterUrl}${backdrop_path}`;
-		name = title;
-	} else if (contentProps.score) {
-		contentType = "Movie";
-		contentScore = score;
-		bannerImg = trailer.images.maximum_image_url
-			? trailer.images.maximum_image_url
-			: images.webp.large_image_url;
-		name = title;
-	} else {
-		contentType = "Anime";
-		contentScore = contentProps.global_rating;
-		bannerImg = contentProps.images;
-		name = contentProps.name;
-	}
+	const [toggleContentInfo, setToggleContentInfo] = useState<boolean>(false);
+	const [loading, setLoading] = useState<boolean>();
+	const [contentScore, setContentScore] = useState<string>("");
+	const [contentType, setContentType] = useState<string>("");
+	const [contentName, setContentName] = useState<string>("");
+	const [contentImage, setContentImage] = useState<string>("");
+
+	const basePosterUrl = import.meta.env.VITE_BASE_POSTER_URL;
 
 	const handleAddContent = async (contentProps: AnimeProps & MovieProps) => {
 		setLoading(true);
@@ -133,12 +116,38 @@ const ContentCard = ({
 	let contentStatus = "";
 
 	useEffect(() => {
+		let formattedScore: string;
 		async () => {
 			const translatedStatus = await translateStatus(
 				contentProps.content_status
 			);
 			contentStatus = translatedStatus;
 		};
+
+		if (contentProps.broadcast) {
+			setContentType("Anime");
+			formattedScore = contentProps.score?.toFixed(2);
+			setContentScore(formattedScore);
+			setContentImage(contentProps.images.jpg.image_url);
+			setContentName(contentProps.title);
+		} else if (contentProps.score) {
+			setContentType("Movie");
+			setContentScore(contentProps.vote_average?.toFixed(2));
+			contentProps.trailer.images.maximum_image_url
+				? setContentImage(contentProps.trailer.images.maximum_image_url)
+				: setContentImage(contentProps.images.webp.large_image_url);
+			setContentName(contentProps.title);
+		} else if (contentProps.poster_path) {
+			setContentType("Movie");
+			setContentScore(contentProps.vote_average?.toFixed(2));
+			setContentImage(`${basePosterUrl}${contentProps?.poster_path}`);
+			setContentName(contentProps.title);
+		} else {
+			setContentType("Anime");
+			setContentScore(contentProps?.global_rating?.toFixed(2));
+			setContentImage(contentProps.images);
+			setContentName(contentProps.name);
+		}
 	}, []);
 
 	return (
@@ -148,43 +157,51 @@ const ContentCard = ({
 		>
 			{toggleContentInfo && (
 				<ContentInfo>
-					<ContentTitle>{name}</ContentTitle>
-					{contentScore !== 0 && contentScore && (
-						<ContentRating>
-							Nota: {Number(contentScore).toFixed(2)}
-						</ContentRating>
-					)}
-					{isWatchlist && (
-						<ContentStatus>Status: {contentStatus}</ContentStatus>
-					)}
-					{!isWatchlist ? (
-						<Button onClick={() => handleAddContent(contentProps)}>
-							{loading ? (
-								<CircularProgress sx={{ color: "#fff;" }} />
-							) : (
-								"Adicionar à Lista"
-							)}
-						</Button>
-					) : (
-						<Button
-							onClick={() => {
-								setContentId(contentProps.id);
-								setOldContentStatus(contentProps.content_status);
-								handleUpdateStatus(contentProps);
-								setShowUpdateForm(true);
-							}}
-						>
-							{loading ? (
-								<CircularProgress sx={{ color: "#fff;" }} />
-							) : (
-								"Atualizar Status"
-							)}
-						</Button>
-					)}
+					<ContentInfoText>
+						<ContentTitle>{contentName}</ContentTitle>
+						{contentScore !== "0.00" && contentScore && (
+							<ContentRating>
+								Nota: {Number(contentScore).toFixed(2)}
+							</ContentRating>
+						)}
+						{isWatchlist && (
+							<ContentStatus>Status: {contentStatus}</ContentStatus>
+						)}
+					</ContentInfoText>
+					<ButtonContainer>
+						{!isWatchlist ? (
+							<Button onClick={() => handleAddContent(contentProps)}>
+								{loading ? (
+									<CircularProgress sx={{ color: "#fff;" }} />
+								) : (
+									"Adicionar à Lista"
+								)}
+							</Button>
+						) : (
+							<Button
+								onClick={() => {
+									setContentId(contentProps.id);
+									setOldContentStatus(contentProps.content_status);
+									handleUpdateStatus(contentProps);
+									setShowUpdateForm(true);
+								}}
+							>
+								{loading ? (
+									<CircularProgress sx={{ color: "#fff;" }} />
+								) : (
+									"Atualizar Status"
+								)}
+							</Button>
+						)}
+					</ButtonContainer>
 				</ContentInfo>
 			)}
 			<ContentBanner
-				src={bannerImg !== "null" ? bannerImg : "assets/img/noimage.png"}
+				src={
+					!["null", "undefined"].includes(contentImage!)
+						? contentImage
+						: "assets/img/noimage.png"
+				}
 			/>
 		</ContentCardContainer>
 	);
