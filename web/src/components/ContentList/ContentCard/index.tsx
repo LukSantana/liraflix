@@ -50,9 +50,7 @@ const ContentCard = ({
 
 	const handleAddContent = async (contentProps: AnimeProps & MovieProps) => {
 		setLoading(true);
-		const contentName = contentProps.title;
 		const contentStatus = "Plan to Watch";
-		const rating = contentProps.vote_average || contentProps.score;
 		const images =
 			contentProps.images?.webp?.image_url ||
 			`${basePosterUrl}/${contentProps.poster_path}`;
@@ -71,22 +69,20 @@ const ContentCard = ({
 			contentName,
 			contentStatus,
 			contentType,
-			globalRating: rating,
+			globalRating: contentScore,
 			genres,
 			images,
 		});
+
 		if (response) {
-			if ("data" in response && response.data && response.data.message) {
-				setAlertInfo({ message: response.data.message, type: "warning" });
+			if (response.message) {
+				setAlertInfo({ message: response.message, type: "warning" });
+			} else {
+				setAlertInfo({
+					message: "Conteúdo adicionado com sucesso!",
+					type: "success",
+				});
 			}
-			setTimeout(
-				() =>
-					setAlertInfo({
-						message: "",
-						type: "",
-					}),
-				3000
-			);
 		}
 		setLoading(false);
 	};
@@ -100,14 +96,6 @@ const ContentCard = ({
 		if (response) {
 			if ("data" in response && response.data && response.data.message) {
 				setAlertInfo({ message: response.data.message, type: "warning" });
-				setTimeout(
-					() =>
-						setAlertInfo({
-							message: "",
-							type: "",
-						}),
-					3000
-				);
 			}
 		}
 		setLoading(false);

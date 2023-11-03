@@ -48,7 +48,7 @@ export const addContentToList = async ({
 	contentName: string,
 	contentStatus: string,
 	contentType: string,
-	globalRating: number
+	globalRating: string,
 	genres: string,
 	images: string
 }) => {
@@ -64,18 +64,18 @@ export const addContentToList = async ({
 		images: images,
 	};
 
-	let response: AxiosResponse | undefined;
+	const getResponse: AxiosResponse | undefined = await getContent({ contentName: contentName });
 
-	response = await getContent({ contentName: contentName });
-
-	if (response?.data) {
+	if (getResponse?.data.length > 0) {
 		return {
 			message: "O conteúdo selecionado já existe na lista.",
 		};
 	}
-	await axios.post(url.toString(), body).then((data) => (response = data));
 
-	return response;
+	let postResponse;
+	await axios.post(url.toString(), body).then((data) => postResponse = data.data);
+
+	return postResponse;
 };
 
 export const updateContentStatus = async (

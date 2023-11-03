@@ -41,7 +41,7 @@ abstract class AncestralController {
     }
   }
 
-  getIntParam(request: Request, paramName: string, required?: true): number {
+  getIntParam(request: Request, paramName: string, required: boolean = true): number {
     const param = request.params[paramName];
 
     if (required && typeof param === 'undefined') {
@@ -56,7 +56,7 @@ abstract class AncestralController {
     return parsedParam;
   }
 
-  getFloatParam(request: Request, paramName: string, required?: true): number {
+  getFloatParam(request: Request, paramName: string, required: boolean = true): number {
     const param = request.params[paramName];
 
     if (required && typeof param === 'undefined') {
@@ -71,7 +71,7 @@ abstract class AncestralController {
     return parsedParam;
   }
 
-  getFloatQueryParam(request: Request, paramName: string, required?: true): number {
+  getFloatQueryParam(request: Request, paramName: string, required: boolean = true): number {
     const param = request.query[paramName];
 
     if (required && typeof param === 'undefined') {
@@ -91,7 +91,23 @@ abstract class AncestralController {
     return parsedParam!;
   }
 
-  getStringParam(request: Request, paramName: string, required?: true): string {
+  getStringQueryParam(request: Request, paramName: string, required: boolean = true): string {
+    const param = request.query[paramName];
+
+    if (required && typeof param === 'undefined') {
+      throw new Error(`Missing required query parameter: ${paramName}`);
+    }
+
+    let parsedParam: any = param
+
+    if (required && typeof parsedParam === undefined) {
+      throw new Error(`Invalid query parameter type: ${paramName}. Expected string.`);
+    }
+
+    return parsedParam!;
+  }
+
+  getStringParam(request: Request, paramName: string, required: boolean = true): string {
     const param = request.params[paramName];
 
     if (required && typeof param === 'undefined') {
@@ -105,7 +121,7 @@ abstract class AncestralController {
     return param;
   }
 
-  getIntBodyAtt(request: Request, attributeName: string, required?: true): number {
+  getIntBodyAtt(request: Request, attributeName: string, required: boolean = true): number {
     const param = request.body[attributeName];
 
     if (required && typeof param === 'undefined') {
@@ -120,22 +136,26 @@ abstract class AncestralController {
     return parsedParam;
   }
 
-  getFloatBodyAtt(request: Request, attributeName: string, required?: true): number {
+  getFloatBodyAtt(request: Request, attributeName: string, required: boolean = true): number | undefined {
     const param = request.body[attributeName];
 
     if (required && typeof param === 'undefined') {
       throw new Error(`Missing required parameter: ${attributeName}`);
     }
-    const parsedParam = parseFloat(param);
+    let parsedParam: number = parseFloat(param);
 
     if (required && isNaN(parsedParam)) {
       throw new Error(`Invalid parameter type: ${attributeName}. Expected float.`);
     }
 
+    if (!required && isNaN(parsedParam)) {
+      return undefined;
+    }
+
     return parsedParam;
   }
 
-  getBoolBodyAtt(request: Request, attributeName: string, required?: true): boolean {
+  getBoolBodyAtt(request: Request, attributeName: string, required: boolean = true): boolean {
     const param = request.body[attributeName];
 
     if (required && typeof param === 'undefined') {

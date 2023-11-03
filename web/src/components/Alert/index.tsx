@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { Alert } from "@mui/material";
-import { keyframes } from "styled-components";
+import { css } from "styled-components";
 
 import { useAlertContext } from "@context/alertContext";
 
@@ -10,22 +10,24 @@ const AlertComponent = () => {
 	const removeAlert = () => {
 		setTimeout(() => {
 			setAlertInfo();
-		}, 5000);
+		}, 6000);
 	};
 
 	useEffect(() => removeAlert, [alertInfo]);
 
-	const alertFadeInAnimation = keyframes`
-	from {
-    opacity: 0;
-  }
+	const alertFadeInAnimation = css`
+		from {
+			opacity: 0;
+		}
 
-  to {
-    opacity: 1;
-	}
+		to {
+			opacity: 1;
+		}
 	`;
 
-	return alertInfo?.message ? (
+	if (!alertInfo?.message) return <></>;
+
+	return (
 		<Alert
 			severity={alertInfo?.type}
 			sx={{
@@ -42,8 +44,6 @@ const AlertComponent = () => {
 		>
 			{alertInfo?.message}
 		</Alert>
-	) : (
-		<></>
 	);
 };
 

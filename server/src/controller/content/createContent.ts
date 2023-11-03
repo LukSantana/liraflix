@@ -5,25 +5,26 @@ import { Request, Response } from "express";
 class createContent extends AncestralController {
   async exec(req: Request, res: Response): Promise<any> {
     try {
-      const contentName = this.getStringBodyAtt(req, 'contentName');
-      const contentStatus = this.getStringBodyAtt(req, 'contentStatus');
-      const contentType = this.getStringBodyAtt(req, 'contentType');
-      const globalRating = this.getFloatBodyAtt(req, 'contentType');
-      const personalRating = this.getFloatBodyAtt(req, 'personalRating');
-      const genres = this.getStringBodyAtt(req, 'genres');
-      const images = this.getStringBodyAtt(req, 'images');
+      const contentName = this.getStringBodyAtt(req, 'contentName')!;
+      const content_status = this.getStringBodyAtt(req, 'contentStatus')!;
+      const content_type = this.getStringBodyAtt(req, 'contentType')!;
+      const global_rating = this.getFloatBodyAtt(req, 'globalRating')!;
+      const personal_rating = this.getFloatBodyAtt(req, 'personalRating', false);
+      const genres = this.getStringBodyAtt(req, 'genres')!;
+      const images = this.getStringBodyAtt(req, 'images')!;
 
       const connection = await this.openDatabaseConnection();
 
-      const response = await contentRepository.createContent(
+      const response = await contentRepository.createContent({
         contentName,
-        contentStatus,
-        contentType,
-        globalRating,
-        personalRating,
+        content_status,
+        content_type,
+        global_rating,
+        personal_rating,
         genres,
         images,
-        connection!,
+        databaseConnection: connection!,
+      }
       );
 
       return res.status(201).json(response);

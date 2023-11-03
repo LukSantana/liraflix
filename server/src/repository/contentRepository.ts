@@ -4,9 +4,9 @@ import { randomUUID } from "crypto";
 class ContentRepository {
   async getContent(
     id: string,
-    name: string,
-    content_status: string,
-    content_type: string,
+    contentName: string,
+    contentStatus: string,
+    contentType: string,
     databaseConnection: PrismaClient,
   ) {
     try {
@@ -17,9 +17,9 @@ class ContentRepository {
         content_type?: string;
       } = {
         id: id,
-        name: name,
-        content_status: content_status,
-        content_type: content_type
+        name: contentName,
+        content_status: contentStatus,
+        content_type: contentType
       };
 
       let response = await databaseConnection.contentList.findMany({
@@ -32,15 +32,25 @@ class ContentRepository {
     }
   }
 
-  async createContent(
+  async createContent({
+    contentName,
+    content_status,
+    content_type,
+    global_rating,
+    genres,
+    images,
+    databaseConnection,
+    personal_rating,
+  }: {
     contentName: string,
     content_status: string,
     content_type: string,
     global_rating: number,
-    personal_rating: number,
     genres: string,
     images: string,
     databaseConnection: PrismaClient,
+    personal_rating?: number,
+  }
   ) {
     try {
       const contentStatusResponse = await databaseConnection?.contentStatus.findFirst({
@@ -61,19 +71,19 @@ class ContentRepository {
       const personalRating = personal_rating;
 
       const queryData: {
-        id: any;
-        name: any;
-        content_status: any;
-        content_type: any;
-        global_rating: any;
-        personal_rating: any;
-        genres: any;
-        images: any;
+        id: string,
+        name: string,
+        content_status: string,
+        content_type: string,
+        global_rating: number,
+        genres: string,
+        images: string,
+        personal_rating?: number,
       } = {
         id: randomUUID(),
         name: contentName,
-        content_status: contentStatus,
-        content_type: contentType,
+        content_status: contentStatus!,
+        content_type: contentType!,
         global_rating: globalRating,
         personal_rating: personalRating && personalRating,
         genres: genres,
