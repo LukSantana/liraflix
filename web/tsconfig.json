@@ -20,34 +20,48 @@
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+    "baseUrl": "./src",
+    "paths": {
+      "@src/*": [
+        "./*"
+      ],
+      "@components/*": [
+        "./components/*"
+      ],
+      "@context/*": [
+        "./context/*"
+      ],
+      "@api/*": [
+        "./api/*"
+      ],
+      "@utils/*": [
+        "./utils/*"
+      ],
+      "@themes": [
+        "./themes"
+      ],
+    },
+    "typeRoots": [
+      "node_modules/@types",
+      "./types"
+    ],
   },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "src/**/*.js",
+    "src/**/*.jsx",
+    "tests/**/*.ts",
+    "tests/**/*.tsx"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ],
   "references": [
     {
       "path": "./tsconfig.node.json"
     },
   ],
-  "include": [
-    "./src"
-  ],
-  "paths": {
-    "@components/*": [
-      "./components/*"
-    ],
-    "@context/*": [
-      "./context/*"
-    ],
-    "@api/*": [
-      "./api/*"
-    ],
-    "@types/*": [
-      "./types/*"
-    ],
-    "@utils/*": [
-      "./utils/*"
-    ],
-    "@themes": [
-      "./themes"
-    ]
-  },
 }
