@@ -1,7 +1,8 @@
 import { useState } from "react";
-import ContentCard from "./ContentCard";
+
+import ContentCard from "@components/ContentList/ContentCard";
+import UpdateForm from "@components/UpdateForm";
 import { ContentListContainer } from "./styles";
-import UpdateForm from "../UpdateForm";
 
 interface ContentListProps {
 	contentList: any[];

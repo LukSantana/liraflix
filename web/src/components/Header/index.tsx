@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { routesInfo } from "../../utils/routesInfo";
 import {
 	HeaderContainer,
 	HeaderLogo,
@@ -12,7 +11,9 @@ import {
 } from "./styles";
 import SearchIcon from "@mui/icons-material/Search";
 import { Avatar } from "@mui/material";
-import TextInput from "../TextInput";
+
+import TextInput from "@components/TextInput";
+import { routesInfo } from "@utils/routesInfo";
 
 const Header = () => {
 	const [searchParams, setSearchParams] = useState<string | null>(null);

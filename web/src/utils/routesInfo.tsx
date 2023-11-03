@@ -1,8 +1,8 @@
-import Animes from "../pages/Animes";
-import Home from "../pages/Home";
-import Movies from "../pages/Movies";
-import Search from "../pages/Search";
-import Watchlist from "../pages/Watchlist";
+import Animes from "@src/pages/Animes";
+import Home from "@src/pages/Home";
+import Movies from "@src/pages/Movies";
+import Search from "@src/pages/Search";
+import Watchlist from "@src/pages/Watchlist";
 
 interface RoutesProps {
 	routeName: string;
@@ -49,7 +49,7 @@ class RoutesInfo {
 				routeDescription: "Página de busca de conteúdo",
 				path: "/search",
 				element: <Search />,
-			}
+			},
 		];
 	}
 }

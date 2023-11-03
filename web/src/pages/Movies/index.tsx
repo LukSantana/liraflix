@@ -4,12 +4,13 @@ import Pagination from "@mui/material/Pagination";
 import PaginationItem from "@mui/material/PaginationItem";
 import { useSearchParams } from "react-router-dom";
 
-import { MoviesContainer } from "./styles";
 import ContentList from "@components/ContentList";
-import { getPopularMovies } from "@api/moviesApi";
-import { MovieProps } from "@types/movie";
 import ContentSkeleton from "@components/ContentList/ContentSkeleton";
-import themes from "../../themes";
+import { getPopularMovies } from "@api/moviesApi";
+import { MovieProps } from "@src/types/movie";
+import themes from "@themes";
+
+import { MoviesContainer } from "./styles";
 
 const Movies = () => {
 	const [loading, setLoading] = useState<boolean>(true);

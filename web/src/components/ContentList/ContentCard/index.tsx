@@ -1,6 +1,16 @@
 import { useEffect, useState } from "react";
-import { MovieProps } from "../../../types/movie";
-import { AnimeProps } from "../../../types/anime";
+
+import { getMovieDataById } from "@api/moviesApi";
+import { CircularProgress } from "@mui/material";
+
+import { useAlertContext } from "@context/alertContext";
+import { addContentToList, updateContentStatus } from "@api/liraflixApi";
+import { ContentProps } from "@src/types/content";
+import { MovieProps } from "@src/types/movie";
+import { AnimeProps } from "@src/types/anime";
+import { translateStatus } from "@utils/translateStatus";
+import Button from "@components/Button";
+import "@src/styles.css";
 import {
 	ContentBanner,
 	ContentCardContainer,
@@ -9,17 +19,6 @@ import {
 	ContentStatus,
 	ContentTitle,
 } from "./styles";
-import "./styles.css";
-import {
-	addContentToList,
-	updateContentStatus,
-} from "../../../api/liraflixApi";
-import { getMovieDataById } from "../../../api/moviesApi";
-import { CircularProgress } from "@mui/material";
-import { useAlertContext } from "../../../context/alertContext";
-import { ContentProps } from "../../../types/content";
-import Button from "../../Button";
-import { translateStatus } from "../../../utils/translateStatus";
 
 export interface ContentCardProps {
 	contentProps: AnimeProps & MovieProps & ContentProps;

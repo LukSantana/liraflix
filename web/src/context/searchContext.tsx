@@ -1,8 +1,9 @@
 import { createContext, useContext, useState } from "react";
-import { AnimeProps } from "../types/anime";
-import { MovieProps } from "../types/movie";
-import { searchMovie } from "../api/moviesApi";
-import { searchAnime } from "../api/animesApi";
+
+import { AnimeProps } from "@src/types/anime";
+import { MovieProps } from "@src/types/movie";
+import { searchMovie } from "@api/moviesApi";
+import { searchAnime } from "@api/animesApi";
 
 export interface SearchContextContent {
 	content: Array<MovieProps & AnimeProps> | undefined;

@@ -2,7 +2,6 @@ import { useState } from "react";
 import { getRandomContent } from "../../api/liraflixApi";
 import {
 	Button,
-	Icon,
 	RandomMoviePickerExternalContainer,
 	RandomMoviePickerInternalContainer,
 	Title,

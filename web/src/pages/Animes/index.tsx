@@ -4,11 +4,12 @@ import Pagination from "@mui/material/Pagination";
 import PaginationItem from "@mui/material/PaginationItem";
 import { useSearchParams } from "react-router-dom";
 
+import ContentList from "@components/ContentList";
+import ContentSkeleton from "@components/ContentList/ContentSkeleton";
+import { getBestAnime } from "@api/animesApi";
+import { AnimeProps } from "@src/types/anime";
+
 import { AnimesContainer } from "./styles";
-import ContentList from "../../components/ContentList";
-import { getBestAnime } from "../../api/animesApi";
-import ContentSkeleton from "../../components/ContentList/ContentSkeleton";
-import { AnimeProps } from "../../types/anime";
 
 const Animes = () => {
 	const [loading, setLoading] = useState<boolean>(true);

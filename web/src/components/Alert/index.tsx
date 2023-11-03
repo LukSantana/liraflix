@@ -1,7 +1,8 @@
-import { Alert } from "@mui/material";
-import { useAlertContext } from "../../context/alertContext";
 import { useEffect } from "react";
+import { Alert } from "@mui/material";
 import { keyframes } from "styled-components";
+
+import { useAlertContext } from "@context/alertContext";
 
 const AlertComponent = () => {
 	const { alertInfo, setAlertInfo } = useAlertContext();

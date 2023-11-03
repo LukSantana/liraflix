@@ -1,5 +1,5 @@
-import { ButtonWrapper } from "./styles";
 import React, { MouseEventHandler } from "react";
+import { ButtonWrapper } from "./styles";
 
 interface ButtonProps {
 	children: string | JSX.Element;

@@ -1,7 +1,9 @@
-import { MouseEventHandler, useState } from "react";
-import { updateContentStatus } from "../../api/liraflixApi";
+import { useState } from "react";
 import OutsideClickHandler from "react-outside-click-handler";
-import Button from "../Button";
+import { updateContentStatus } from "@api/liraflixApi";
+import Button from "@components/Button";
+import { useAlertContext } from "@context/alertContext";
+import { possibleStatus } from "@utils/translateStatus";
 import {
 	InputWrapper,
 	Label,
@@ -11,8 +13,6 @@ import {
 	UpdateFormContainer,
 	UpdateFormWrapper,
 } from "./styles";
-import { useAlertContext } from "../../context/alertContext";
-import { possibleStatus } from "../../utils/translateStatus";
 
 interface UpdateFormProps {
 	contentId: string | number;

@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import themes from "../../../themes";
+import themes from "@themes";
 
 export const ContentCardContainer = styled.div`
 	position: relative;

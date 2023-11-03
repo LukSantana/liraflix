@@ -1,5 +1,5 @@
 import { Route, Routes } from "react-router-dom";
-import { routesInfo } from "../utils/routesInfo";
+import { routesInfo } from "@utils/routesInfo";
 
 const Router = () => {
 	return (

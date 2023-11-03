@@ -4,14 +4,15 @@ import Pagination from "@mui/material/Pagination";
 import PaginationItem from "@mui/material/PaginationItem";
 import { useSearchParams } from "react-router-dom";
 
-import { SearchPageContainer } from "./styles";
-import ContentList from "@components/ContentList";
 import { useSearchContext } from "@context/searchContext";
-import { MovieProps } from "@types/movie";
-import { AnimeProps } from "@types/anime";
+import { MovieProps } from "@src/types/movie";
+import { AnimeProps } from "@src/types/anime";
+import ContentList from "@components/ContentList";
 import NoContentWarning from "@components/ContentList/NoContentWarning";
 import ContentSkeleton from "@components/ContentList/ContentSkeleton";
 import themes from "@themes";
+
+import { SearchPageContainer } from "./styles";
 
 const Search = () => {
 	const [loading, setLoading] = useState<boolean>(true);
@@ -51,7 +52,7 @@ const Search = () => {
 			{noContent && <NoContentWarning />}
 			{!noContent && content !== undefined && (
 				<>
-					<ContentList contentList={content} isWatchlist={false}/>
+					<ContentList contentList={content} isWatchlist={false} />
 					<Pagination
 						page={parseInt(page)}
 						sx={{
