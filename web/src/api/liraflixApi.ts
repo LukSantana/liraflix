@@ -1,5 +1,6 @@
 import axios, { AxiosResponse } from "axios";
 import { liraflixApiUrl } from "@src/environment";
+import { addContentToListTypes, getContentTypes, getGenresTypes, updateContentTypes } from "@src/types/api/liraflixApiTypes";
 
 export const getContent = async (
 	{
@@ -7,18 +8,17 @@ export const getContent = async (
 		contentName,
 		contentStatus,
 		contentType,
-	}: {
-		contentId?: string,
-		contentName?: string,
-		contentStatus?: string,
-		contentType?: string,
-	}
-) => {
+		page,
+	}: getContentTypes
+): Promise<AxiosResponse | undefined> => {
 	let url: URL | string = new URL(`${liraflixApiUrl}/content`);
+
 	contentId && url.searchParams.set("contentId", contentId);
 	contentName && url.searchParams.set("contentName", contentName);
 	contentStatus && url.searchParams.set("contentStatus", contentStatus);
 	contentType && url.searchParams.set("contentType", contentType);
+	page && url.searchParams.set("page", page.toString());
+
 	url = url.toString();
 
 	let response: AxiosResponse | undefined;
@@ -27,7 +27,7 @@ export const getContent = async (
 	return response;
 };
 
-export const getRandomContent = async () => {
+export const getRandomContent = async (): Promise<AxiosResponse | undefined> => {
 	let url: URL | string = new URL(`${liraflixApiUrl}/content/random`);
 	url = url.toString();
 
@@ -44,14 +44,7 @@ export const addContentToList = async ({
 	globalRating,
 	genres,
 	images
-}: {
-	contentName: string,
-	contentStatus: string,
-	contentType: string,
-	globalRating: string,
-	genres: string,
-	images: string
-}) => {
+}: addContentToListTypes) => {
 	let url: URL | string = new URL(`${liraflixApiUrl}/content`);
 	url = url.toString();
 
@@ -78,10 +71,10 @@ export const addContentToList = async ({
 	return postResponse;
 };
 
-export const updateContentStatus = async (
-	content_id: string | number,
-	content_status: string
-) => {
+export const updateContentStatus = async ({
+	content_id,
+	content_status
+}: updateContentTypes): Promise<AxiosResponse | undefined> => {
 	let url: URL | string = new URL(`${liraflixApiUrl}/content/${content_id}`);
 	url = url.toString();
 
@@ -95,10 +88,12 @@ export const updateContentStatus = async (
 	return response;
 };
 
-export const getStatusNameById = async (contentStatusId: string) => {
+export const getStatus = async ({ contentStatusId, contentStatusName }: { contentStatusId?: string, contentStatusName?: string }): Promise<AxiosResponse | undefined> => {
 	let url: URL | string = new URL(
-		`${liraflixApiUrl}/status/${contentStatusId}`
+		`${liraflixApiUrl}/status`
 	);
+	if (contentStatusId) url.searchParams.set("id", contentStatusId);
+	if (contentStatusName) url.searchParams.set("statusName", contentStatusName);
 	url = url.toString();
 
 	let response: AxiosResponse | undefined;
@@ -107,7 +102,7 @@ export const getStatusNameById = async (contentStatusId: string) => {
 	return response;
 };
 
-export const deleteContent = async (content_id: string) => {
+export const deleteContent = async (content_id: string): Promise<AxiosResponse | undefined> => {
 	let url: URL | string = new URL(`${liraflixApiUrl}/content/${content_id}`);
 	url = url.toString();
 
@@ -118,7 +113,7 @@ export const deleteContent = async (content_id: string) => {
 };
 
 
-export const getGenres = async (genreName?: string, contentType?: string) => {
+export const getGenres = async ({ genreName, contentType }: getGenresTypes): Promise<AxiosResponse | undefined> => {
 	let url: URL | string = new URL(`${liraflixApiUrl}/genres`);
 	genreName && url.searchParams.set("genreName", genreName);
 	contentType && url.searchParams.set("contentType", contentType);
@@ -130,7 +125,7 @@ export const getGenres = async (genreName?: string, contentType?: string) => {
 	return response;
 };
 
-export const getGenresByNames = async (genreNames: Array<string>) => {
+export const getGenresByNames = async (genreNames: Array<string>): Promise<AxiosResponse | undefined> => {
 	let url: URL | string = new URL(
 		`${liraflixApiUrl}/genres/${genreNames.toString()}`
 	);

@@ -1,3 +1,6 @@
+import { getStatus } from "@src/api/liraflixApi";
+import translate from "translate";
+
 interface Status {
 	id: string;
 	status: string;
@@ -32,10 +35,22 @@ export const possibleStatus: Array<Status> = [
 	},
 ];
 
-export const translateStatus = async (englishStatus: string) => {
-	const translatedStatus = await possibleStatus.filter(
-		(status) => status.id === englishStatus
-	)[0].translation;
+export const translateStatusIdToName = async (statusId: string) => {
+	const statusInfo = await getStatus({ contentStatusId: statusId }).then(response => response?.data[0]);
+
+	const statusName = statusInfo.status;
+
+	const translatedStatus = await translate(statusName, { to: "pt" });
 
 	return translatedStatus;
+};
+
+export const translateStatusNameToId = async (statusName: string) => {
+	const translatedStatus = await translate(statusName, { to: "en" });
+
+	const statusInfo = await getStatus({ contentStatusName: translatedStatus }).then(response => response?.data[0]);
+
+	const statusId = statusInfo.id;
+
+	return statusId;
 };

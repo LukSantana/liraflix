@@ -9,10 +9,10 @@ class deleteContent extends AncestralController {
 
       const connection = await this.openDatabaseConnection();
 
-      const response = await contentRepository.deleteContent(
+      const response = await contentRepository.deleteContent({
         contentId,
-        connection!,
-      );
+        databaseConnection: connection!,
+      });
 
       return res.status(200).json(response);
     } catch (e: any | undefined) {

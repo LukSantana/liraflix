@@ -1,8 +1,8 @@
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 
 const bearerToken = import.meta.env.VITE_BEARER_TOKEN_MOVIE_API;
 
-export const getPopularMovies = async (page: string) => {
+export const getPopularMovies = async (page: string): Promise<AxiosResponse | undefined> => {
 	let url: URL | string = new URL(
 		"https://api.themoviedb.org/3/movie/top_rated"
 	);
@@ -10,7 +10,7 @@ export const getPopularMovies = async (page: string) => {
 	url.searchParams.set("page", page);
 
 	url = url.toString();
-	let response;
+	let response: AxiosResponse | undefined;
 
 	await axios
 		.get(url, {
@@ -25,7 +25,7 @@ export const getPopularMovies = async (page: string) => {
 	return response;
 };
 
-export const searchMovie = (searchQuery: string, page: string) => {
+export const searchMovie = async (searchQuery: string, page: string): Promise<AxiosResponse | undefined> => {
 	let url: URL | string = new URL("https://api.themoviedb.org/3/search/movie");
 	url.searchParams.set("query", searchQuery);
 	url.searchParams.set("include_adult", "false");
@@ -33,25 +33,7 @@ export const searchMovie = (searchQuery: string, page: string) => {
 	url.searchParams.set("page", page);
 
 	url = url.toString();
-	let response;
-
-	axios
-		.get(url, {
-			method: "GET",
-			headers: {
-				accept: "application/json",
-				Authorization: `Bearer ${bearerToken}`,
-			},
-		})
-		.then((data) => (response = data.data));
-
-	return response;
-};
-
-export const getMovieDataById = async (id: number) => {
-	const url = `https://api.themoviedb.org/3/movie/${id}`
-
-	let response;
+	let response: AxiosResponse | undefined;
 
 	await axios
 		.get(url, {
@@ -64,4 +46,22 @@ export const getMovieDataById = async (id: number) => {
 		.then((data) => (response = data));
 
 	return response;
-}
+};
+
+export const getMovieDataById = async (id: number): Promise<AxiosResponse | undefined> => {
+	const url = `https://api.themoviedb.org/3/movie/${id}`;
+
+	let response: AxiosResponse | undefined;
+
+	await axios
+		.get(url, {
+			method: "GET",
+			headers: {
+				accept: "application/json",
+				Authorization: `Bearer ${bearerToken}`,
+			},
+		})
+		.then((data) => (response = data));
+
+	return response;
+};

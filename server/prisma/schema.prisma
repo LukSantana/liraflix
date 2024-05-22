@@ -13,7 +13,7 @@ model ContentList {
   content_status     String
   content_type       String
   global_rating      Float    @default(0)
-  personal_rating    Float?   @default(0)
+  personal_rating    Float?   
   genres             String
   images             String
   creation_timestamp DateTime @default(now())

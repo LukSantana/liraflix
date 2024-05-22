@@ -8,6 +8,6 @@ export const ContentListContainer = styled.div`
 	box-sizing: border-box;
 	align-items: center;
 	justify-content: center;
-	flex: 1 1 0;
 	width: 100%;
+	height: 100%;
 `;

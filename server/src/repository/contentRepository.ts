@@ -1,32 +1,75 @@
 import { PrismaClient } from "@prisma/client";
 import { randomUUID } from "crypto";
+import {
+  createContentTypes,
+  deleteContentTypes,
+  getContentTypes,
+  updateContentTypes
+} from "../types/content/contentFunctionsTypes";
+import { Content } from "models/Content";
+import { parseDateToString } from "utils/parseDateToString";
+import { parseStringArrayStructuredToArray } from "utils/parseStringArrayStructuredToArray";
+
+interface wherePropsTypes {
+  id?: string;
+  name?: string;
+  content_status?: string;
+  content_type?: string;
+}
 
 class ContentRepository {
-  async getContent(
-    id: string,
-    contentName: string,
-    contentStatus: string,
-    contentType: string,
-    databaseConnection: PrismaClient,
-  ) {
+  async getContent({
+    id,
+    contentName,
+    contentStatus,
+    contentType,
+    page,
+    databaseConnection,
+  }: getContentTypes) {
     try {
-      let whereProps: {
-        id?: string;
-        name?: string;
-        content_status?: string;
-        content_type?: string;
-      } = {
-        id: id,
-        name: contentName,
-        content_status: contentStatus,
-        content_type: contentType
-      };
+      let whereProps: wherePropsTypes = {};
 
-      let response = await databaseConnection.contentList.findMany({
-        where: whereProps,
+      if (id) whereProps.id = id
+      if (contentName) whereProps.name = contentName
+      if (contentStatus) whereProps.content_status = contentStatus
+      if (contentType) whereProps.content_type = contentType
+
+      let findManyProps: {
+        where?: wherePropsTypes,
+        take: number,
+        skip?: number
+      } = {
+        take: 20,
+      }
+
+      if (whereProps.id || whereProps.content_status || whereProps.content_type || whereProps.name) findManyProps.where = whereProps
+
+      if (page) findManyProps.skip = (page - 1) * 20
+
+      let response = await databaseConnection.contentList.findMany(findManyProps)
+
+      const contentList = response.map((content: any) => {
+        let { id, content_status, content_type, creation_timestamp, genres, global_rating, name, personal_rating, record_timestamp, images } = content;
+
+        if(typeof genres === 'string') genres = parseStringArrayStructuredToArray(genres)
+
+        const contentObject = new Content({
+          id,
+          content_status,
+          content_type,
+          creation_timestamp: parseDateToString(creation_timestamp),
+          genres,
+          global_rating,
+          name,
+          personal_rating,
+          record_timestamp: parseDateToString(record_timestamp),
+          images,
+        })
+
+        return contentObject.exportResponse() 
       });
 
-      return response;
+      return contentList;
     } catch (e: any) {
       throw new Error(e);
     }
@@ -41,16 +84,7 @@ class ContentRepository {
     images,
     databaseConnection,
     personal_rating,
-  }: {
-    contentName: string,
-    content_status: string,
-    content_type: string,
-    global_rating: number,
-    genres: string,
-    images: string,
-    databaseConnection: PrismaClient,
-    personal_rating?: number,
-  }
+  }: createContentTypes
   ) {
     try {
       const contentStatusResponse = await databaseConnection?.contentStatus.findFirst({
@@ -70,25 +104,20 @@ class ContentRepository {
       const globalRating = global_rating;
       const personalRating = personal_rating;
 
-      const queryData: {
-        id: string,
-        name: string,
-        content_status: string,
-        content_type: string,
-        global_rating: number,
-        genres: string,
-        images: string,
-        personal_rating?: number,
-      } = {
+      const contentObject = new Content({
         id: randomUUID(),
         name: contentName,
         content_status: contentStatus!,
         content_type: contentType!,
         global_rating: globalRating,
-        personal_rating: personalRating && personalRating,
-        genres: genres,
-        images: images,
-      };
+        personal_rating: personalRating,
+        genres: parseStringArrayStructuredToArray(genres),
+        images,
+      })
+
+      const contentData = contentObject.exportContentToDatabase();
+
+      let queryData = contentData;
 
       const response = await databaseConnection?.contentList.create({
         data: queryData,
@@ -100,11 +129,11 @@ class ContentRepository {
     }
   }
 
-  async updateContent(
-    contentId: string,
-    contentStatus: string,
-    databaseConnection: PrismaClient,
-  ) {
+  async updateContent({
+    contentId,
+    contentStatus,
+    databaseConnection
+  }: updateContentTypes) {
     try {
       const contentStatusResponse = await databaseConnection.contentStatus.findFirst({
         where: {
@@ -125,10 +154,10 @@ class ContentRepository {
     }
   }
 
-  async deleteContent(
-    contentId: string,
-    databaseConnection: PrismaClient,
-  ) {
+  async deleteContent({
+    contentId,
+    databaseConnection,
+  }: deleteContentTypes) {
     try {
       const response = await databaseConnection.contentList.delete({
         where: {
@@ -153,7 +182,44 @@ class ContentRepository {
         skip: skip,
       });
 
-      return response;
+      if (response === null) throw new Error("No content found");
+
+      const {
+        id,
+        content_status,
+        content_type,
+        creation_timestamp,
+        genres,
+        global_rating,
+        name,
+        personal_rating,
+        record_timestamp,
+        images,
+      } = response;
+
+      const parsedGenres = parseStringArrayStructuredToArray(genres);
+
+      const parsedCreationTimestamp = parseDateToString(creation_timestamp);
+
+      const parsedRecordTimestamp = parseDateToString(record_timestamp);
+
+
+      const contentObject = new Content({
+        id,
+        content_status,
+        content_type,
+        creation_timestamp: parsedCreationTimestamp,
+        genres: parsedGenres,
+        global_rating,
+        name,
+        personal_rating,
+        record_timestamp: parsedRecordTimestamp,
+        images,
+      })
+
+      const contentResponse = contentObject.exportResponse();
+
+      return contentResponse;
     } catch (e: any) {
       throw new Error(e);
     }

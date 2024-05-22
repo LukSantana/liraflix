@@ -1,12 +1,14 @@
-import { PrismaClient } from "@prisma/client";
+import { Genre } from "models/Genre";
+import { getGenresTypes } from "types/genres/genresFunctionsTypes";
+import { parseDateToString } from "utils/parseDateToString";
 
 class GenresRepository {
-  async getGenres(
-    genreName: string,
-    contentType: string,
-    genreId: string,
-    databaseConnection: PrismaClient,
-  ) {
+  async getGenres({
+    genreName,
+    contentType,
+    genreId,
+    databaseConnection,
+  }: getGenresTypes) {
     try {
       let whereProps: {
         name: string;
@@ -18,12 +20,28 @@ class GenresRepository {
         id: genreId,
       };
 
-      let response;
-
-      response = await databaseConnection.genres.findMany({
+      const genres = await databaseConnection.genres.findMany({
         where: whereProps,
       });
-      return response;
+
+      const genreList = genres.map((genre) => {
+        const { id, name, content_type, creation_timestamp, record_timestamp } = genre;
+
+        const parsedCreationTimestamp = parseDateToString(creation_timestamp);
+        const parsedRecordTimestamp = parseDateToString(record_timestamp);
+
+        const genreObject = new Genre({
+          id,
+          name,
+          content_type,
+          creation_timestamp: parsedCreationTimestamp,
+          record_timestamp: parsedRecordTimestamp,
+        });
+
+        return genreObject.exportResponse()
+      })
+
+      return genreList;
     } catch (e: any) {
       throw new Error(e);
     }

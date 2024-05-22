@@ -12,15 +12,17 @@ import ContentSkeleton from "@components/ContentList/ContentSkeleton";
 import themes from "@themes";
 
 import { WatchlistContainer } from "./styles";
+import { ContentWrapper } from "../styles";
+import { getPageParam } from "@src/utils/getPageParam";
 
 const Watchlist = () => {
 	const [loading, setLoading] = useState<boolean>(true);
 	const [content, setContent] = useState<MovieProps[]>([]);
 	const [searchParams] = useSearchParams();
-	const page = searchParams.get("page") || "1";
+	const {page} = getPageParam(searchParams);
 
 	useEffect(() => {
-		getContent({}).then((response) => {
+		getContent({ page }).then((response) => {
 			setContent(response?.data);
 			setLoading(false);
 		});
@@ -30,10 +32,10 @@ const Watchlist = () => {
 		<WatchlistContainer>
 			{loading && <ContentSkeleton />}
 			{!loading && (
-				<>
+				<ContentWrapper>
 					<ContentList contentList={content} isWatchlist={true} />
 					<Pagination
-						page={parseInt(page)}
+						page={page}
 						sx={{
 							display: "flex",
 							justifyContent: "center",
@@ -53,15 +55,15 @@ const Watchlist = () => {
 								component={Link}
 								to={
 									!searchParams.get("search")
-										? `/movies${item.page === 1 ? "" : `?page=${item.page}`}`
-										: `/movies?search=${searchParams}`
+										? `/watchlist${item.page === 1 ? "" : `?page=${item.page}`}`
+										: `/watchlist?search=${searchParams}`
 								}
 								reloadDocument
 								{...item}
 							/>
 						)}
 					/>
-				</>
+				</ContentWrapper>
 			)}
 		</WatchlistContainer>
 	);

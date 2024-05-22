@@ -13,14 +13,15 @@ import ContentSkeleton from "@components/ContentList/ContentSkeleton";
 import themes from "@themes";
 
 import { SearchPageContainer } from "./styles";
+import { getPageParam } from "@src/utils/getPageParam";
 
 const Search = () => {
 	const [loading, setLoading] = useState<boolean>(true);
 	const [noContent, setNoContent] = useState<boolean>(false);
 	const [params] = useSearchParams();
 	const searchParams = params.get("search");
+	const { page, pageParam } = getPageParam(searchParams);
 
-	const page = params.get("page") || "1";
 	const { content } = useSearchContext();
 	useState<Array<MovieProps & AnimeProps>>();
 	const { fetchData, sortContentByScore, setContent, filterContentByTitle } =
@@ -28,7 +29,10 @@ const Search = () => {
 
 	const getData = async () => {
 		const tempData = sortContentByScore(
-			filterContentByTitle(await fetchData(searchParams, page), searchParams)
+			filterContentByTitle(
+				await fetchData(searchParams, pageParam),
+				searchParams
+			)
 		);
 
 		setContent(tempData);
@@ -54,7 +58,7 @@ const Search = () => {
 				<>
 					<ContentList contentList={content} isWatchlist={false} />
 					<Pagination
-						page={parseInt(page)}
+						page={page}
 						sx={{
 							display: "flex",
 							justifyContent: "center",

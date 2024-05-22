@@ -11,11 +11,11 @@ class getGenres extends AncestralController {
       const connection = await this.openDatabaseConnection();
 
       const response = await statusRepository
-        .getStatus(
+        .getStatus({
           statusName,
           statusId,
-          connection!,
-        );
+          databaseConnection: connection!,
+        });
 
       return res.status(200).json(response);
     } catch (e: any) {

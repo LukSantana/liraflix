@@ -8,7 +8,7 @@ import { addContentToList, updateContentStatus } from "@api/liraflixApi";
 import { ContentProps } from "@src/types/content";
 import { MovieProps } from "@src/types/movie";
 import { AnimeProps } from "@src/types/anime";
-import { translateStatus } from "@utils/translateStatus";
+import { translateStatusIdToName } from "@utils/translateStatus";
 import Button from "@components/Button";
 import "./styles.css";
 import {
@@ -21,13 +21,17 @@ import {
 	ContentStatus,
 	ContentTitle,
 } from "./styles";
+import { AxiosResponse } from "axios";
+import { Content } from "@src/models/Content";
 
 export interface ContentCardProps {
 	contentProps: AnimeProps & MovieProps & ContentProps;
 	isWatchlist?: boolean;
-	setShowUpdateForm: (showUpdateForm: boolean) => void;
-	setContentId: (contentId: number | string) => void;
-	setOldContentStatus: (contentStatus: string) => void;
+	setShowUpdateForm: any;
+	setContentId: any;
+	content: ContentProps;
+	setContent: any;
+	setOldContentStatus: any;
 }
 
 const ContentCard = ({
@@ -35,20 +39,27 @@ const ContentCard = ({
 	isWatchlist,
 	setShowUpdateForm,
 	setContentId,
+	content,
+	setContent,
 	setOldContentStatus,
 }: ContentCardProps) => {
 	const { setAlertInfo } = useAlertContext();
 
 	const [toggleContentInfo, setToggleContentInfo] = useState<boolean>(false);
 	const [loading, setLoading] = useState<boolean>();
-	const [contentScore, setContentScore] = useState<string>("");
+	const [genres, setGenres] = useState<Array<string>>([]);
+	const [globalRating, setGlobalRating] = useState<string>("");
+	const [personalRating, setPersonalRating] = useState<string | null>(null);
 	const [contentType, setContentType] = useState<string>("");
 	const [contentName, setContentName] = useState<string>("");
 	const [contentImage, setContentImage] = useState<string>("");
+	const [contentStatusName, setContentStatusName] = useState<string>("");
 
 	const basePosterUrl = import.meta.env.VITE_BASE_POSTER_URL;
 
-	const handleAddContent = async (contentProps: AnimeProps & MovieProps) => {
+	const handleAddContent = async (
+		contentProps: AnimeProps & MovieProps & ContentProps
+	) => {
 		setLoading(true);
 		const contentStatus = "Plan to Watch";
 		const images =
@@ -58,10 +69,11 @@ const ContentCard = ({
 		if (contentProps.genres) {
 			contentProps.genres.forEach((genre) => (genres += `${genre.name},`));
 		} else if (contentProps.genre_ids) {
-			await getMovieDataById(contentProps.id).then((response) =>
-				response.data.genres.forEach((genre) => {
-					genres += `${genre.name},`;
-				})
+			await getMovieDataById(contentProps.id).then(
+				(response: AxiosResponse | undefined) =>
+					response?.data.genres.forEach((genre) => {
+						genres += `${genre.name},`;
+					})
 			);
 		}
 
@@ -69,7 +81,7 @@ const ContentCard = ({
 			contentName,
 			contentStatus,
 			contentType,
-			globalRating: contentScore,
+			globalRating,
 			genres,
 			images,
 		});
@@ -87,56 +99,84 @@ const ContentCard = ({
 		setLoading(false);
 	};
 
-	const handleUpdateStatus = async (contentProps: AnimeProps & MovieProps) => {
-		setLoading(true);
-		const contentId = contentProps.id.toString();
+	const getGenresName = async () =>
+		await getMovieDataById(contentProps.id).then(
+			(response: AxiosResponse | undefined) =>
+				response?.data.genres.map((genre) => genre.name)
+		);
 
-		const response = await updateContentStatus(contentId, "");
-		console.log(response);
-		if (response) {
-			if ("data" in response && response.data && response.data.message) {
-				setAlertInfo({ message: response.data.message, type: "warning" });
-			}
-		}
-		setLoading(false);
+	const translateStatusName = async () => {
+		if (!content) return;
+		if (!content.content_status) return;
+		const contentStatusName = await translateStatusIdToName(
+			content.content_status
+		);
+		if (contentStatusName) setContentStatusName(contentStatusName);
 	};
 
-	let contentStatus = "";
-
 	useEffect(() => {
-		let formattedScore: string;
-		async () => {
-			const translatedStatus = await translateStatus(
-				contentProps.content_status
-			);
-			contentStatus = translatedStatus;
-		};
+		const isPublicAnime = contentProps.broadcast;
+		const isPublicMovie = contentProps.score || contentProps.poster_path;
 
-		if (contentProps.broadcast) {
-			setContentType("Anime");
-			formattedScore = contentProps.score?.toFixed(2);
-			setContentScore(formattedScore);
-			setContentImage(contentProps.images.jpg.image_url);
-			setContentName(contentProps.title);
-		} else if (contentProps.score) {
-			setContentType("Movie");
-			setContentScore(contentProps.vote_average?.toFixed(2));
-			contentProps.trailer.images.maximum_image_url
-				? setContentImage(contentProps.trailer.images.maximum_image_url)
-				: setContentImage(contentProps.images.webp.large_image_url);
-			setContentName(contentProps.title);
-		} else if (contentProps.poster_path) {
-			setContentType("Movie");
-			setContentScore(contentProps.vote_average?.toFixed(2));
-			setContentImage(`${basePosterUrl}${contentProps?.poster_path}`);
-			setContentName(contentProps.title);
+		if (isPublicAnime) {
+			const content = new Content({
+				content_type: "Anime",
+				genres: contentProps.genres.map((theme: any) => theme.name),
+				global_rating: parseFloat(contentProps.score?.toFixed(2)),
+				name: contentProps.title,
+				personal_rating: null,
+				images: contentProps.images.jpg.image_url,
+			});
+			setContentType(content.contentType);
+			setGlobalRating(content.globalRating.toString());
+			setContentImage(content.images);
+			setContentName(content.name);
+		} else if (isPublicMovie) {
+			const fetchData = async () => {
+				setGenres(await getGenresName());
+			};
+
+			fetchData();
+
+			const content = new Content({
+				content_type: "Movie",
+				genres: genres,
+				global_rating: parseFloat(contentProps.vote_average?.toFixed(2)),
+				name: contentProps.title,
+				personal_rating: null,
+				images: `${basePosterUrl}${contentProps?.poster_path}`,
+			});
+			setContentType(content.contentType);
+			setGlobalRating(content.globalRating.toString());
+			setContentImage(content.images);
+			setContentName(content.name);
 		} else {
-			setContentType("Anime");
-			setContentScore(contentProps?.global_rating?.toFixed(2));
-			setContentImage(contentProps.images);
-			setContentName(contentProps.name);
+			const content = new Content({
+				content_type: contentProps.content_type,
+				genres: contentProps.genres,
+				global_rating: contentProps.global_rating,
+				name: contentProps.name,
+				personal_rating: contentProps.personal_rating
+					? contentProps.personal_rating
+					: null,
+				images: contentProps.images,
+				content_status: contentProps.content_status,
+				creation_timestamp: contentProps.creation_timestamp,
+				id: contentProps.id,
+				record_timestamp: contentProps.record_timestamp,
+			});
+
+			setContent(content);
+			setContentType(content.contentType);
+			setGlobalRating(content.globalRating.toString());
+			setPersonalRating(
+				content.personal_rating ? content.personal_rating.toString() : null
+			);
+			setContentImage(content.images);
+			setContentName(content.name);
+			translateStatusName();
 		}
-	}, []);
+	}, [contentProps]);
 
 	return (
 		<ContentCardContainer
@@ -147,13 +187,20 @@ const ContentCard = ({
 				<ContentInfo>
 					<ContentInfoText>
 						<ContentTitle>{contentName}</ContentTitle>
-						{contentScore !== "0.00" && contentScore && (
+						{globalRating && (
 							<ContentRating>
-								Nota: {Number(contentScore).toFixed(2)}
+								Nota Global: {Number(globalRating).toFixed(2)}
+							</ContentRating>
+						)}
+						{personalRating && (
+							<ContentRating>
+								Nota Pessoal: {Number(personalRating).toFixed(2)}
 							</ContentRating>
 						)}
 						{isWatchlist && (
-							<ContentStatus>Status: {contentStatus}</ContentStatus>
+							<ContentStatus>
+								Status: {contentStatusName ? contentStatusName : "Não definido"}
+							</ContentStatus>
 						)}
 					</ContentInfoText>
 					<ButtonContainer>
@@ -168,9 +215,9 @@ const ContentCard = ({
 						) : (
 							<Button
 								onClick={() => {
-									setContentId(contentProps.id);
-									setOldContentStatus(contentProps.content_status);
-									handleUpdateStatus(contentProps);
+									if (!content) return;
+									setContentId(content.id);
+									setOldContentStatus(content.content_status);
 									setShowUpdateForm(true);
 								}}
 							>

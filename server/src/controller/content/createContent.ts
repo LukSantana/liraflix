@@ -9,9 +9,11 @@ class createContent extends AncestralController {
       const content_status = this.getStringBodyAtt(req, 'contentStatus')!;
       const content_type = this.getStringBodyAtt(req, 'contentType')!;
       const global_rating = this.getFloatBodyAtt(req, 'globalRating')!;
-      const personal_rating = this.getFloatBodyAtt(req, 'personalRating', false);
+      let personal_rating = this.getFloatBodyAtt(req, 'personalRating', false);
       const genres = this.getStringBodyAtt(req, 'genres')!;
       const images = this.getStringBodyAtt(req, 'images')!;
+
+      if (!personal_rating) personal_rating = null;
 
       const connection = await this.openDatabaseConnection();
 

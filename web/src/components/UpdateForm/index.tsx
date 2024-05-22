@@ -3,7 +3,10 @@ import OutsideClickHandler from "react-outside-click-handler";
 import { updateContentStatus } from "@api/liraflixApi";
 import Button from "@components/Button";
 import { useAlertContext } from "@context/alertContext";
-import { possibleStatus } from "@utils/translateStatus";
+import {
+	possibleStatus,
+	translateStatusNameToId,
+} from "@utils/translateStatus";
 import {
 	InputWrapper,
 	Label,
@@ -13,14 +16,18 @@ import {
 	UpdateFormContainer,
 	UpdateFormWrapper,
 } from "./styles";
+import translate from "translate";
+import { ContentProps } from "@src/types/content";
 
 interface UpdateFormProps {
-	contentId: string | number;
-	oldContentStatus: string;
-	setShowUpdateForm: (showUpdateForm: boolean) => void;
+	content: ContentProps
+	contentId: string | number | undefined;
+	oldContentStatus: string | undefined;
+	setShowUpdateForm: any;
 }
 
 const UpdateForm = ({
+	content,
 	contentId,
 	oldContentStatus,
 	setShowUpdateForm,
@@ -31,10 +38,23 @@ const UpdateForm = ({
 	const handleUpdate = async (event: any) => {
 		event.preventDefault();
 
-		const response = await updateContentStatus(contentId, contentStatus);
+		console.log(content);
+
+		if (!contentId) return;
+
+		const translatedStatus = await translateStatusNameToId(contentStatus);
+
+		const response = await updateContentStatus({
+			content_id: contentId,
+			content_status: translatedStatus,
+		});
+
 		if (response?.status === 200) {
+			const portugueseStatus = await translate(contentStatus, { to: "pt" });
+
+			content.content_status = response?.data.content_status;
 			setAlertInfo({
-				message: `O conteúdo ${response.data.name} teve seu status atualizado para ${contentStatus}.`,
+				message: `O conteúdo ${response.data.name} teve seu status atualizado para ${portugueseStatus}.`,
 				type: "success",
 			});
 		} else {

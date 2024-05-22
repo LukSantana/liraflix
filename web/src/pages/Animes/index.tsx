@@ -10,16 +10,17 @@ import { getBestAnime } from "@api/animesApi";
 import { AnimeProps } from "@src/types/anime";
 
 import { AnimesContainer } from "./styles";
+import { getPageParam } from "@src/utils/getPageParam";
 
 const Animes = () => {
 	const [loading, setLoading] = useState<boolean>(true);
 	const [animes, setAnimes] = useState<AnimeProps[]>([]);
 	const [searchParams] = useSearchParams();
-	const page = parseInt(searchParams.get("page") || "1", 10);
-
+	const {page, pageParam} = getPageParam(searchParams)
+	
 	useEffect(() => {
-		getBestAnime(searchParams.get("page")!).then((response) => {
-			setAnimes(response.data.data);
+		getBestAnime(pageParam!).then((response) => {
+			setAnimes(response?.data.data);
 			setLoading(false);
 		});
 	}, []);

@@ -136,7 +136,7 @@ abstract class AncestralController {
     return parsedParam;
   }
 
-  getFloatBodyAtt(request: Request, attributeName: string, required: boolean = true): number | undefined {
+  getFloatBodyAtt(request: Request, attributeName: string, required: boolean = true): number | null | undefined {
     const param = request.body[attributeName];
 
     if (required && typeof param === 'undefined') {

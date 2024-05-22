@@ -11,6 +11,7 @@ import { MovieProps } from "@src/types/movie";
 import themes from "@themes";
 
 import { MoviesContainer } from "./styles";
+import { ContentWrapper } from "../styles";
 
 const Movies = () => {
 	const [loading, setLoading] = useState<boolean>(true);
@@ -20,7 +21,7 @@ const Movies = () => {
 
 	useEffect(() => {
 		getPopularMovies(page)
-			.then((response) => setMovies(response.data.results))
+			.then((response) => setMovies(response?.data.results))
 			.then(() => setLoading(false));
 	}, []);
 
@@ -28,7 +29,7 @@ const Movies = () => {
 		<MoviesContainer>
 			{loading && <ContentSkeleton />}
 			{!loading && (
-				<>
+				<ContentWrapper>
 					<ContentList contentList={movies} isWatchlist={false} />
 					<Pagination
 						page={parseInt(page)}
@@ -59,7 +60,7 @@ const Movies = () => {
 							/>
 						)}
 					/>
-				</>
+				</ContentWrapper>
 			)}
 		</MoviesContainer>
 	);

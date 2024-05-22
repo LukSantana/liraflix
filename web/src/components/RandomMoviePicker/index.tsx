@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { getRandomContent } from "../../api/liraflixApi";
 import {
 	Button,
